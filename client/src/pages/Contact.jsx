@@ -37,21 +37,21 @@ const Contact = () => {
                                 <FaPhone className="text-secondary-cyan text-xl mt-1 mr-4" />
                                 <div>
                                     <h3 className="text-white font-semibold">Phone</h3>
-                                    <p className="text-gray-400">+1 234 567 8900</p>
+                                    <p className="text-gray-400">+91 7809394966</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
                                 <FaEnvelope className="text-secondary-cyan text-xl mt-1 mr-4" />
                                 <div>
                                     <h3 className="text-white font-semibold">Email</h3>
-                                    <p className="text-gray-400">info@prholidays.in</p>
+                                    <p className="text-gray-400">info@prholiday.in</p>
                                 </div>
                             </div>
                             <div className="flex items-start">
                                 <FaMapMarkerAlt className="text-secondary-cyan text-xl mt-1 mr-4" />
                                 <div>
                                     <h3 className="text-white font-semibold">Office</h3>
-                                    <p className="text-gray-400">123 Travel Street, Vacation City, 90210</p>
+                                    <p className="text-gray-400">opposite of Boyanika, Bazarpada, Bhawanipatna, Odisha 766001</p>
                                 </div>
                             </div>
                         </div>

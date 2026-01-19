@@ -12,32 +12,32 @@ const Destinations = () => {
         setTimeout(() => {
             setDestinations([
                 {
+                    _id: '1',
+                    name: 'Spiti Valley',
+                    country: 'India',
+                    description: 'A cold desert mountain valley in the Himalayas, known for its stunning landscapes and ancient monasteries.',
+                    image: 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?q=80&w=2070&auto=format&fit=crop'
+                },
+                {
+                    _id: '2',
+                    name: 'Sikkim',
+                    country: 'India',
+                    description: 'A mystical land of rugged mountains, deep valleys, and beautiful Buddhist monasteries.',
+                    image: 'https://images.unsplash.com/photo-1589135410978-c4416f182e17?q=80&w=2070&auto=format&fit=crop'
+                },
+                {
                     _id: '3',
-                    name: 'Santorini',
-                    country: 'Greece',
-                    description: 'Famous for its stunning sunsets, whitewashed buildings, and blue-domed churches.',
-                    image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=2070&auto=format&fit=crop'
+                    name: 'Kerala',
+                    country: 'India',
+                    description: "God's Own Country, famous for its backwaters, palm-fringed beaches, and lush greenery.",
+                    image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?q=80&w=2070&auto=format&fit=crop'
                 },
                 {
                     _id: '4',
-                    name: 'Dubai',
-                    country: 'UAE',
-                    description: 'A city of skyscrapers, ports, and beaches, where big business takes place alongside sun-seeking tourism.',
-                    image: 'https://images.unsplash.com/photo-1512453979798-5ea90b7cad11?q=80&w=1974&auto=format&fit=crop'
-                },
-                {
-                    _id: '5',
-                    name: 'New York',
-                    country: 'USA',
-                    description: 'The city that never sleeps, famous for Times Square, Central Park, and the Statue of Liberty.',
-                    image: 'https://images.unsplash.com/photo-1496442226666-8d4a0e62e6e9?q=80&w=2070&auto=format&fit=crop'
-                },
-                {
-                    _id: '6',
-                    name: 'Venice',
-                    country: 'Italy',
-                    description: 'A city built on water, known for its canals, bridges, and stunning architecture.',
-                    image: 'https://images.unsplash.com/photo-1514890547357-a9ee288728e0?q=80&w=2070&auto=format&fit=crop'
+                    name: 'Karnataka',
+                    country: 'India',
+                    description: 'A diverse state known for its heritage sites in Hampi, lush forests of Coorg, and tech hub Bengaluru.',
+                    image: 'https://images.unsplash.com/photo-1600213133273-047b74f07530?q=80&w=2070&auto=format&fit=crop'
                 }
             ]);
             setLoading(false);

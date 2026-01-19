@@ -5,7 +5,7 @@ import { FaQuoteLeft, FaStar } from 'react-icons/fa';
 const testimonials = [
     {
         id: 1,
-        name: 'Sarah Johnson',
+        name: 'Anisha',
         role: 'Travel Enthusiast',
         rating: 5,
         text: 'PRHolidays made our honeymoon absolutely magical. The attention to detail and personalized service was outstanding!',
@@ -13,25 +13,49 @@ const testimonials = [
     },
     {
         id: 2,
-        name: 'Michael Chen',
+        name: 'Rajat',
         role: 'Adventure Seeker',
         rating: 5,
-        text: 'The Swiss Alps tour was perfectly organized. The guides were knowledgeable and the accommodations were top-notch.',
+        text: 'The Spiti Valley tour was perfectly organized. The guides were knowledgeable and the views were breathtaking.',
         image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1887&auto=format&fit=crop'
     },
     {
         id: 3,
-        name: 'Emma Wilson',
+        name: 'Bhawani',
         role: 'Family Traveler',
         rating: 4,
-        text: 'Great family package to Bali. Everything was taken care of, allowing us to just relax and enjoy our vacation.',
+        text: 'Great family package to Kerala. Everything was taken care of, allowing us to just relax and enjoy our vacation.',
         image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop'
+    },
+    {
+        id: 4,
+        name: 'Shweta',
+        role: 'Solo Traveler',
+        rating: 5,
+        text: 'Exploring the 12 Jyotirlings with PRHolidays was a spiritual and seamless experience. Highly recommended!',
+        image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop'
+    },
+    {
+        id: 5,
+        name: 'Shibanee',
+        role: 'Culture Explorer',
+        rating: 5,
+        text: 'The Sikkim heritage tour was eye-opening. PRHolidays really knows how to showcase the local culture.',
+        image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=2071&auto=format&fit=crop'
+    },
+    {
+        id: 6,
+        name: 'Ashmita',
+        role: 'Nature Lover',
+        rating: 4,
+        text: 'Karnataka’s wildlife and temples were amazing. The itinerary was well-paced and very informative.',
+        image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=1886&auto=format&fit=crop'
     }
 ];
 
 const Testimonials = () => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((item, index) => (
                 <motion.div
                     key={item.id}
