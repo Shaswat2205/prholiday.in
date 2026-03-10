@@ -9,6 +9,7 @@ const Packages = () => {
     const [loading, setLoading] = useState(true);
     const [priceRange, setPriceRange] = useState(50000);
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [sortBy, setSortBy] = useState('Sort by: Featured');
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -25,6 +26,20 @@ const Packages = () => {
     }, []);
 
     const categories = ['All', 'Spiritual', 'Adventure', 'Nature', 'Heritage', 'Beach'];
+
+    let filteredPackages = packages.filter(pkg => {
+        const matchCategory = selectedCategory === 'All' || pkg.category === selectedCategory;
+        const matchPrice = pkg.price <= priceRange;
+        return matchCategory && matchPrice;
+    });
+
+    if (sortBy === 'Price: Low to High') {
+        filteredPackages.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'Price: High to Low') {
+        filteredPackages.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'Top Rated') {
+        filteredPackages.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
 
     return (
         <div className="pt-28 min-h-screen bg-brand-light pb-20">
@@ -46,12 +61,16 @@ const Packages = () => {
                                 Discover Your <span className="text-brand-primary">Next Adventure</span>
                             </h1>
                             <p className="text-brand-gray-500 font-medium max-w-xl">
-                                Showing {packages.length} curated packages matching your interests.
+                                Showing {filteredPackages.length} curated packages matching your interests.
                                 Guaranteed best prices and unforgettable memories.
                             </p>
                         </div>
                         <div className="flex gap-4">
-                            <select className="bg-white border-2 border-gray-100 rounded-2xl px-6 py-4 font-bold text-brand-secondary focus:outline-none focus:border-brand-primary/30 transition-all shadow-sm">
+                            <select 
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="bg-white border-2 border-gray-100 rounded-2xl px-6 py-4 font-bold text-brand-secondary focus:outline-none focus:border-brand-primary/30 transition-all shadow-sm"
+                            >
                                 <option>Sort by: Featured</option>
                                 <option>Price: Low to High</option>
                                 <option>Price: High to Low</option>
@@ -146,7 +165,7 @@ const Packages = () => {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {packages.map((pkg, idx) => (
+                                {filteredPackages.map((pkg, idx) => (
                                     <motion.div
                                         key={pkg._id}
                                         initial={{ opacity: 0, y: 20 }}
@@ -159,7 +178,7 @@ const Packages = () => {
                             </div>
                         )}
 
-                        {!loading && packages.length === 0 && (
+                        {!loading && filteredPackages.length === 0 && (
                             <div className="bg-white rounded-[2.5rem] p-20 text-center shadow-xl border border-gray-100">
                                 <div className="text-6xl mb-6">🏜️</div>
                                 <h3 className="text-2xl font-black text-brand-secondary mb-4">No Packages Found</h3>
