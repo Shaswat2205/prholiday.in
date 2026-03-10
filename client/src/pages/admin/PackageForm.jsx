@@ -58,7 +58,7 @@ const PackageForm = () => {
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -74,10 +74,10 @@ const PackageForm = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`http://localhost:5000/api/admin/packages/${id}`, cleanData, config);
+                await axios.put(`http://localhost:5000/api/packages/${id}`, cleanData, config);
                 alert('Package updated successfully');
             } else {
-                await axios.post('http://localhost:5000/api/admin/packages', cleanData, config);
+                await axios.post('http://localhost:5000/api/packages', cleanData, config);
                 alert('Package created successfully');
             }
             navigate('/admin/packages');
@@ -98,8 +98,8 @@ const PackageForm = () => {
         formData.append('file', file);
 
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.post('http://localhost:5000/api/admin/upload', formData, {
+            const token = localStorage.getItem('token');
+            const res = await axios.post('http://localhost:5000/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
@@ -155,6 +155,20 @@ const PackageForm = () => {
                             className="w-full bg-gray-700 text-white rounded px-4 py-3 border border-gray-600 focus:border-secondary-cyan focus:outline-none"
                         />
                         {errors.price && <span className="text-red-400 text-sm">{errors.price.message}</span>}
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-400 mb-2 font-semibold">Category</label>
+                        <select
+                            {...register("category", { required: "Category is required" })}
+                            className="w-full bg-gray-700 text-white rounded px-4 py-3 border border-gray-600 focus:border-secondary-cyan focus:outline-none"
+                        >
+                            <option value="">Select a Category</option>
+                            {['Spiritual', 'Adventure', 'Nature', 'Heritage', 'Beach', 'Solo Trip', 'Family', 'Luxury', 'Honeymoon', 'Wildlife', 'Cultural'].map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                        {errors.category && <span className="text-red-400 text-sm">{errors.category.message}</span>}
                     </div>
 
                     <div>

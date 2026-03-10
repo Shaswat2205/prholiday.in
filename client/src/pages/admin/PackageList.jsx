@@ -26,14 +26,14 @@ const PackageList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this package?')) {
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = localStorage.getItem('token');
                 const config = {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`http://localhost:5000/api/admin/packages/${id}`, config);
-                setPackages(packages.filter(pkg => pkg._id !== id));
+                await axios.delete(`http://localhost:5000/api/packages/${id}`, config);
+                setPackages(packages.filter(p => p._id !== id));
             } catch (err) {
                 alert('Error deleting package');
                 console.error(err);

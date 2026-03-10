@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { FaClock, FaUser, FaStar, FaMapMarkerAlt, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import SEO from '../components/common/SEO';
@@ -13,40 +14,17 @@ const PackageDetail = () => {
     const [activeTab, setActiveTab] = useState('Overview');
 
     useEffect(() => {
-        // Mock data fetch
-        setTimeout(() => {
-            setPkg({
-                _id: id,
-                name: 'Kalahandi Nature Extravaganza',
-                location: 'Odisha, India',
-                description: 'Experience the magic of Kalahandi with stunning temples, and lush landscapes. This comprehensive package takes you through the heart of Tribal culture and nature. Discover hidden waterfalls, ancient shrines, and the vibrant traditions of the local communities.',
-                price: 1200,
-                duration: { days: 7, nights: 6 },
-                maxPax: 10,
-                rating: { average: 4.8, count: 24 },
-                images: [
-                    'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1200&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?q=80&w=1200&auto=format&fit=crop'
-                ],
-                itinerary: [
-                    { day: 1, title: "Arrival & Orientation", desc: "Arrival in Denpasar and transfer to Ubud hotel. Welcome dinner with traditional music." },
-                    { day: 2, title: "Nature & Wildlife", desc: "Sacred Monkey Forest and Tegallalang Rice Terrace exploration." },
-                    { day: 3, title: "Volcanic Wonders", desc: "Kintamani Volcano tour and Coffee Plantation visit." },
-                    { day: 4, title: "Coastal Sunset", desc: "Transfer to Seminyak, sunset at Tanah Lot Temple." },
-                    { day: 5, title: "Relaxation", desc: "Free day for beach activities or local shopping." },
-                    { day: 6, title: "Cultural Grandeur", desc: "Uluwatu Temple visit and Kecak Fire Dance performance." },
-                    { day: 7, title: "Farewell", desc: "Final breakfast and departure transfer." }
-                ],
-                inclusions: [
-                    "Luxury Transfers", "4-Star Accommodation", "Daily Gourmet Breakfast", "Private Local Guide", "All Activity Fees"
-                ],
-                exclusions: [
-                    "Visa Fees", "Personal Tipping", "Travel Insurance", "Lunch & Dinner"
-                ]
-            });
-            setLoading(false);
-        }, 800);
+        const fetchPackage = async () => {
+            try {
+                const res = await axios.get(`http://localhost:5000/api/packages/${id}`);
+                setPkg(res.data.data);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPackage();
     }, [id]);
 
     if (loading) return (
@@ -65,7 +43,7 @@ const PackageDetail = () => {
 
             {/* Project Hero */}
             <section className="relative h-[60vh] overflow-hidden">
-                <img src={pkg.images[0]} className="w-full h-full object-cover" alt={pkg.name} />
+                <img src={pkg.images && pkg.images[0] ? pkg.images[0] : 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80'} className="w-full h-full object-cover" alt={pkg.name} />
                 <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary via-brand-secondary/40 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 w-full p-12">
                     <div className="container mx-auto px-4">
@@ -143,19 +121,19 @@ const PackageDetail = () => {
 
                             {activeTab === 'Itinerary' && (
                                 <div className="space-y-8">
-                                    {pkg.itinerary.map((day, idx) => (
+                                    {pkg.itinerary && pkg.itinerary.map((day, idx) => (
                                         <div key={idx} className="flex gap-6 group">
                                             <div className="flex-shrink-0">
                                                 <div className="w-12 h-12 rounded-2xl bg-brand-primary text-white flex items-center justify-center font-black shadow-lg shadow-brand-primary/20">
-                                                    {day.day}
+                                                    {typeof day === 'object' ? day.day : idx + 1}
                                                 </div>
                                             </div>
                                             <div className="pb-8 border-b border-gray-100 last:border-0 w-full">
                                                 <h3 className="text-xl font-black text-brand-secondary mb-2 group-hover:text-brand-primary transition-colors">
-                                                    {day.title}
+                                                    {typeof day === 'object' ? day.title : `Day ${idx + 1}`}
                                                 </h3>
                                                 <p className="text-brand-gray-500 font-medium leading-relaxed">
-                                                    {day.desc}
+                                                    {typeof day === 'object' ? day.desc : day}
                                                 </p>
                                             </div>
                                         </div>
@@ -170,12 +148,12 @@ const PackageDetail = () => {
                                             <FaCheckCircle className="text-green-500" /> Inclusions
                                         </h3>
                                         <ul className="space-y-4">
-                                            {pkg.inclusions.map((item, i) => (
-                                                <li key={i} className="flex items-center gap-3 text-brand-gray-500 font-bold">
-                                                    <span className="w-2 h-2 rounded-full bg-brand-primary"></span>
-                                                    {item}
-                                                </li>
-                                            ))}
+                                        {pkg.inclusions && pkg.inclusions.map((item, i) => (
+                                            <li key={i} className="flex items-center gap-3 text-brand-gray-500 font-bold">
+                                                <span className="w-2 h-2 rounded-full bg-brand-primary"></span>
+                                                {item}
+                                            </li>
+                                        ))}
                                         </ul>
                                     </div>
                                     <div className="space-y-6">
@@ -183,20 +161,20 @@ const PackageDetail = () => {
                                             <FaTimesCircle className="text-red-500" /> Exclusions
                                         </h3>
                                         <ul className="space-y-4">
-                                            {pkg.exclusions.map((item, i) => (
-                                                <li key={i} className="flex items-center gap-3 text-brand-gray-500 font-bold opacity-60">
-                                                    <span className="w-2 h-2 rounded-full bg-gray-300"></span>
-                                                    {item}
-                                                </li>
-                                            ))}
+                                        {pkg.exclusions && pkg.exclusions.map((item, i) => (
+                                            <li key={i} className="flex items-center gap-3 text-brand-gray-500 font-bold opacity-60">
+                                                <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+                                                {item}
+                                            </li>
+                                        ))}
                                         </ul>
                                     </div>
                                 </div>
                             )}
 
-                            {activeTab === 'Gallery' && (
+                                {activeTab === 'Gallery' && (
                                 <div className="grid grid-cols-2 gap-4">
-                                    {pkg.images.map((img, i) => (
+                                    {pkg.images && pkg.images.map((img, i) => (
                                         <div key={i} className="h-64 rounded-3xl overflow-hidden shadow-lg border-4 border-white">
                                             <img src={img} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" alt="" />
                                         </div>

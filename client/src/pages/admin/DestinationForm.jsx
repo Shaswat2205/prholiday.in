@@ -38,7 +38,7 @@ const DestinationForm = () => {
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -46,10 +46,10 @@ const DestinationForm = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`http://localhost:5000/api/admin/destinations/${id}`, data, config);
+                await axios.put(`http://localhost:5000/api/destinations/${id}`, data, config);
                 alert('Destination updated successfully');
             } else {
-                await axios.post('http://localhost:5000/api/admin/destinations', data, config);
+                await axios.post('http://localhost:5000/api/destinations', data, config);
                 alert('Destination created successfully');
             }
             navigate('/admin/destinations');
@@ -69,8 +69,8 @@ const DestinationForm = () => {
         formData.append('file', file);
 
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.post('http://localhost:5000/api/admin/upload', formData, {
+            const token = localStorage.getItem('token');
+            const res = await axios.post('http://localhost:5000/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`

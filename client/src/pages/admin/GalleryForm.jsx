@@ -12,14 +12,14 @@ const GalleryForm = () => {
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             };
 
-            await axios.post('http://localhost:5000/api/admin/gallery', data, config);
+            await axios.post('http://localhost:5000/api/gallery', data, config);
             alert('Image added successfully');
             navigate('/admin/gallery');
         } catch (err) {
@@ -38,8 +38,8 @@ const GalleryForm = () => {
         formData.append('file', file);
 
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.post('http://localhost:5000/api/admin/upload', formData, {
+            const token = localStorage.getItem('token');
+            const res = await axios.post('http://localhost:5000/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`

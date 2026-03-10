@@ -28,6 +28,9 @@ const BookingSchema = new mongoose.Schema({
         type: Number,
         default: 1
     },
+    travelDate: {
+        type: Date
+    },
     checkIn: {
         type: Date
     },
@@ -41,6 +44,10 @@ const BookingSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'confirmed', 'cancelled', 'completed'],
         default: 'pending'
+    },
+    paymentMode: {
+        type: String,
+        default: 'Pay Later'
     },
     user: {
         type: mongoose.Schema.ObjectId,

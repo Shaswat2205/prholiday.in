@@ -42,6 +42,15 @@ const Hero = () => {
                 animate="visible"
                 className="relative container mx-auto px-4 text-center z-10 pt-20"
             >
+                <motion.div
+                    initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 20, duration: 1.5 }}
+                    className="flex justify-center mb-6"
+                >
+                    <img src="/logo.png" alt="PR Holidays" className="h-24 md:h-36 lg:h-48 drop-shadow-2xl" style={{ filter: 'brightness(0) invert(1) drop-shadow(0 4px 6px rgba(0,0,0,0.5))' }} />
+                </motion.div>
+
                 <motion.h1
                     variants={itemVariants}
                     className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight"

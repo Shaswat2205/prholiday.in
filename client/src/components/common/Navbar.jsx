@@ -32,8 +32,9 @@ const Navbar = () => {
         { name: 'Home', path: '/' },
         { name: 'Packages', path: '/packages' },
         { name: 'Destinations', path: '/destinations' },
+        { name: 'Testimonials', path: '/testimonials' },
         { name: 'About', path: '/about' },
-        { name: 'Contact', path: '/contact' },
+        { name: 'Contact', path: '/contact' }
     ];
 
     return (
@@ -94,8 +95,8 @@ const Navbar = () => {
                                             exit={{ opacity: 0, y: 10 }}
                                             className="absolute right-0 mt-3 w-56 bg-white rounded-[2rem] shadow-2xl border border-gray-50 p-3 flex flex-col gap-1"
                                         >
-                                            <Link to="/profile" className="flex items-center gap-3 px-6 py-4 rounded-2xl hover:bg-brand-light transition-all text-brand-secondary font-bold text-sm group">
-                                                <FaUserAlt className="text-brand-primary group-hover:scale-110 transition-transform" /> My Profile
+                                            <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-3 px-6 py-4 rounded-2xl hover:bg-brand-light transition-all text-brand-secondary font-bold text-sm group">
+                                                <FaUserAlt className="text-brand-primary group-hover:scale-110 transition-transform" /> {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
                                             </Link>
                                             <button
                                                 onClick={logout}

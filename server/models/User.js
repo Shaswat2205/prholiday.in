@@ -26,6 +26,21 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: 'https://cdn-icons-png.flaticon.com/512/149/149071.png'
     },
+    bio: {
+        type: String,
+        maxlength: 500
+    },
+    likedPackages: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Package'
+        }
+    ],
+    gallery: [
+        {
+            type: String
+        }
+    ],
     bookings: [
         {
             type: mongoose.Schema.ObjectId,
@@ -55,9 +70,9 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Encrypt password using bcrypt
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function () {
     if (!this.isModified('password')) {
-        next();
+        return;
     }
 
     const salt = await bcrypt.genSalt(10);

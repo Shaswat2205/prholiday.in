@@ -25,13 +25,13 @@ const GalleryList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this image?')) {
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = localStorage.getItem('token');
                 const config = {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`http://localhost:5000/api/admin/gallery/${id}`, config);
+                await axios.delete(`http://localhost:5000/api/gallery/${id}`, config);
                 setImages(images.filter(img => img._id !== id));
             } catch (err) {
                 alert('Error deleting image');

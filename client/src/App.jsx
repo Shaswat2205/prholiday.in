@@ -10,13 +10,13 @@ import DestinationDetail from './pages/DestinationDetail';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import About from './pages/About';
+import Testimonials from './pages/Testimonials';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Profile from './pages/Profile';
 import PrivateRoute from './components/common/PrivateRoute';
 import AdminRoute from './components/common/AdminRoute';
 
-import AdminLogin from './pages/admin/Login';
+import UserDashboard from './pages/user/Dashboard';
 import DashboardLayout from './components/admin/DashboardLayout';
 import Dashboard from './pages/admin/Dashboard';
 import PackageList from './pages/admin/PackageList';
@@ -28,6 +28,7 @@ import GalleryForm from './pages/admin/GalleryForm';
 import TestimonialList from './pages/admin/TestimonialList';
 import TestimonialForm from './pages/admin/TestimonialForm';
 import BookingList from './pages/admin/BookingList';
+import UserList from './pages/admin/UserList';
 
 const App = () => {
     return (
@@ -48,6 +49,7 @@ const App = () => {
                     <Route path="packages/:id" element={<PackageDetail />} />
                     <Route path="destinations" element={<Destinations />} />
                     <Route path="destinations/:id" element={<DestinationDetail />} />
+                    <Route path="testimonials" element={<Testimonials />} />
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />
 
@@ -56,9 +58,9 @@ const App = () => {
                     <Route path="register" element={<Register />} />
 
                     {/* Protected User Routes */}
-                    <Route path="profile" element={
+                    <Route path="dashboard" element={
                         <PrivateRoute>
-                            <Profile />
+                            <UserDashboard />
                         </PrivateRoute>
                     } />
 
@@ -66,7 +68,6 @@ const App = () => {
                 </Route>
 
                 {/* Admin Routes */}
-                <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={
                     <AdminRoute>
                         <DashboardLayout />
@@ -86,6 +87,7 @@ const App = () => {
                     <Route path="testimonials/new" element={<TestimonialForm />} />
                     <Route path="testimonials/edit/:id" element={<TestimonialForm />} />
                     <Route path="bookings" element={<BookingList />} />
+                    <Route path="users" element={<UserList />} />
                 </Route>
             </Routes>
         </Router>

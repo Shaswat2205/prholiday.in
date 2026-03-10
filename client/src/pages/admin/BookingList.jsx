@@ -11,13 +11,13 @@ const BookingList = () => {
 
     const fetchBookings = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             };
-            const res = await axios.get('http://localhost:5000/api/admin/bookings', config);
+            const res = await axios.get('http://localhost:5000/api/bookings', config);
             setBookings(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -28,13 +28,13 @@ const BookingList = () => {
 
     const handleStatusUpdate = async (id, newStatus) => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             };
-            await axios.put(`http://localhost:5000/api/admin/bookings/${id}`, { status: newStatus }, config);
+            await axios.put(`http://localhost:5000/api/bookings/${id}`, { status: newStatus }, config);
 
             setBookings(bookings.map(booking =>
                 booking._id === id ? { ...booking, status: newStatus } : booking
@@ -49,9 +49,10 @@ const BookingList = () => {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Pending': return 'text-yellow-500';
-            case 'Confirmed': return 'text-green-500';
-            case 'Cancelled': return 'text-red-500';
+            case 'pending': return 'text-yellow-500';
+            case 'confirmed': return 'text-green-500';
+            case 'cancelled': return 'text-red-500';
+            case 'completed': return 'text-blue-500';
             default: return 'text-gray-500';
         }
     };
@@ -95,7 +96,9 @@ const BookingList = () => {
                                         {booking.travelers}
                                     </td>
                                     <td className="px-6 py-4 font-bold">
-                                        <span className={getStatusColor(booking.status)}>{booking.status}</span>
+                                        <span className={getStatusColor(booking.status)}>
+                                            {booking.status ? booking.status.charAt(0).toUpperCase() + booking.status.slice(1) : ''}
+                                        </span>
                                     </td>
                                     <td className="px-6 py-4">
                                         <select
@@ -103,9 +106,10 @@ const BookingList = () => {
                                             onChange={(e) => handleStatusUpdate(booking._id, e.target.value)}
                                             className="bg-gray-700 text-white text-sm rounded px-2 py-1 border border-gray-600 focus:outline-none focus:border-secondary-cyan"
                                         >
-                                            <option value="Pending">Pending</option>
-                                            <option value="Confirmed">Confirmed</option>
-                                            <option value="Cancelled">Cancelled</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="confirmed">Confirmed</option>
+                                            <option value="cancelled">Cancelled</option>
+                                            <option value="completed">Completed</option>
                                         </select>
                                     </td>
                                 </tr>

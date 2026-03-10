@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { FaBox, FaMapMarkedAlt, FaImages, FaComment, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import { FaBox, FaMapMarkedAlt, FaImages, FaComment, FaSignOutAlt, FaTachometerAlt, FaUsers } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 
 const DashboardLayout = () => {
@@ -19,7 +19,8 @@ const DashboardLayout = () => {
         { name: 'Destinations', path: '/admin/destinations', icon: <FaMapMarkedAlt /> },
         { name: 'Gallery', path: '/admin/gallery', icon: <FaImages /> },
         { name: 'Testimonials', path: '/admin/testimonials', icon: <FaComment /> },
-        { name: 'Bookings', path: '/admin/bookings', icon: <FaComment /> }, // Using same icon for now or can import FaClipboardList
+        { name: 'Bookings', path: '/admin/bookings', icon: <FaComment /> }, 
+        { name: 'Users', path: '/admin/users', icon: <FaUsers /> },
     ];
 
     return (

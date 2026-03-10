@@ -31,7 +31,7 @@ const TestimonialForm = () => {
     const onSubmit = async (data) => {
         setLoading(true);
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -39,10 +39,10 @@ const TestimonialForm = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`http://localhost:5000/api/admin/testimonials/${id}`, data, config);
+                await axios.put(`http://localhost:5000/api/testimonials/${id}`, data, config);
                 alert('Testimonial updated successfully');
             } else {
-                await axios.post('http://localhost:5000/api/admin/testimonials', data, config);
+                await axios.post('http://localhost:5000/api/testimonials', data, config);
                 alert('Testimonial created successfully');
             }
             navigate('/admin/testimonials');
@@ -62,8 +62,8 @@ const TestimonialForm = () => {
         formData.append('file', file);
 
         try {
-            const token = localStorage.getItem('adminToken');
-            const res = await axios.post('http://localhost:5000/api/admin/upload', formData, {
+            const token = localStorage.getItem('token');
+            const res = await axios.post('http://localhost:5000/api/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
@@ -114,12 +114,12 @@ const TestimonialForm = () => {
                 <div>
                     <label className="block text-gray-400 mb-2 font-semibold">Testimonial Text</label>
                     <textarea
-                        {...register("text", { required: "Text is required" })}
+                        {...register("review", { required: "Review is required" })}
                         rows="4"
                         className="w-full bg-gray-700 text-white rounded px-4 py-3 border border-gray-600 focus:border-secondary-cyan focus:outline-none"
                         placeholder="They say..."
                     ></textarea>
-                    {errors.text && <span className="text-red-400 text-sm">{errors.text.message}</span>}
+                    {errors.review && <span className="text-red-400 text-sm">{errors.review.message}</span>}
                 </div>
 
                 <div>

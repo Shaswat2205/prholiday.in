@@ -22,6 +22,15 @@ const TestimonialSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Package'
     },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
+    },
     featured: {
         type: Boolean,
         default: false

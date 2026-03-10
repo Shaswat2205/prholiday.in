@@ -25,13 +25,13 @@ const DestinationList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this destination?')) {
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = localStorage.getItem('token');
                 const config = {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`http://localhost:5000/api/admin/destinations/${id}`, config);
+                await axios.delete(`http://localhost:5000/api/destinations/${id}`, config);
                 setDestinations(destinations.filter(d => d._id !== id));
             } catch (err) {
                 alert('Error deleting destination');

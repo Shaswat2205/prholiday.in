@@ -13,7 +13,9 @@ const TestimonialList = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/testimonials');
+            const token = localStorage.getItem('token');
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            const res = await axios.get('http://localhost:5000/api/testimonials/admin', config);
             setTestimonials(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -25,18 +27,30 @@ const TestimonialList = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this testimonial?')) {
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = localStorage.getItem('token');
                 const config = {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`http://localhost:5000/api/admin/testimonials/${id}`, config);
+                await axios.delete(`http://localhost:5000/api/testimonials/${id}`, config);
                 setTestimonials(testimonials.filter(t => t._id !== id));
             } catch (err) {
                 alert('Error deleting testimonial');
                 console.error(err);
             }
+        }
+    };
+
+    const handleStatusUpdate = async (id, status) => {
+        try {
+            const token = localStorage.getItem('token');
+            const config = { headers: { Authorization: `Bearer ${token}` } };
+            await axios.put(`http://localhost:5000/api/testimonials/${id}`, { status }, config);
+            setTestimonials(testimonials.map(t => t._id === id ? { ...t, status } : t));
+        } catch (err) {
+            alert('Error updating status');
+            console.error(err);
         }
     };
 
@@ -61,6 +75,7 @@ const TestimonialList = () => {
                             <th className="px-6 py-4">User</th>
                             <th className="px-6 py-4">Rating</th>
                             <th className="px-6 py-4">Quote</th>
+                            <th className="px-6 py-4">Status</th>
                             <th className="px-6 py-4">Actions</th>
                         </tr>
                     </thead>
@@ -79,13 +94,25 @@ const TestimonialList = () => {
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 text-secondary-gold font-bold">{item.rating}/5</td>
-                                <td className="px-6 py-4 italic truncate max-w-xs">{item.text}</td>
-                                <td className="px-6 py-4 space-x-3">
-                                    <Link to={`/admin/testimonials/edit/${item._id}`} className="text-blue-400 hover:text-blue-300">
-                                        <FaEdit size={18} />
-                                    </Link>
-                                    <button onClick={() => handleDelete(item._id)} className="text-red-400 hover:text-red-300">
-                                        <FaTrash size={18} />
+                                <td className="px-6 py-4 italic truncate max-w-xs">{item.review || item.comment || item.text}</td>
+                                <td className="px-6 py-4 font-bold">
+                                    <span className={item.status === 'approved' ? 'text-green-500' : item.status === 'rejected' ? 'text-red-500' : 'text-yellow-500'}>
+                                        {item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Pending'}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 space-x-3 text-sm">
+                                    {item.status !== 'approved' && (
+                                        <button onClick={() => handleStatusUpdate(item._id, 'approved')} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500">
+                                            Approve
+                                        </button>
+                                    )}
+                                    {item.status !== 'rejected' && (
+                                        <button onClick={() => handleStatusUpdate(item._id, 'rejected')} className="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-500">
+                                            Reject
+                                        </button>
+                                    )}
+                                    <button onClick={() => handleDelete(item._id)} className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500">
+                                        Delete
                                     </button>
                                 </td>
                             </tr>

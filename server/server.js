@@ -24,7 +24,7 @@ app.use(helmet({
 
 // CORS config
 const corsOptions = {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://localhost:5174', process.env.CLIENT_URL],
     credentials: true,
     optionsSuccessStatus: 200
 };
@@ -66,6 +66,15 @@ app.use((err, req, res, next) => {
         message: err.message || 'Server Error'
     });
 });
+
+// Connect Kafka
+const { connectProducer } = require('./events/producer');
+const { connectConsumer } = require('./events/consumer');
+
+// Initialize Kafka (Non-blocking)
+console.log('Initializing Kafka connections...');
+connectProducer();
+connectConsumer();
 
 const PORT = process.env.PORT || 5000;
 
