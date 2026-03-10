@@ -9,10 +9,14 @@ import PackageDetail from './pages/PackageDetail';
 import DestinationDetail from './pages/DestinationDetail';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-
 import About from './pages/About';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import PrivateRoute from './components/common/PrivateRoute';
+import AdminRoute from './components/common/AdminRoute';
 
-import Login from './pages/admin/Login';
+import AdminLogin from './pages/admin/Login';
 import DashboardLayout from './components/admin/DashboardLayout';
 import Dashboard from './pages/admin/Dashboard';
 import PackageList from './pages/admin/PackageList';
@@ -31,7 +35,7 @@ const App = () => {
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={
-                    <div className="flex flex-col min-h-screen bg-gradient-to-b from-primary-start via-primary-mid to-primary-end">
+                    <div className="flex flex-col min-h-screen bg-brand-light">
                         <Navbar />
                         <main className="flex-grow">
                             <Outlet />
@@ -46,12 +50,28 @@ const App = () => {
                     <Route path="destinations/:id" element={<DestinationDetail />} />
                     <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />
+
+                    {/* Auth Routes */}
+                    <Route path="login" element={<Login />} />
+                    <Route path="register" element={<Register />} />
+
+                    {/* Protected User Routes */}
+                    <Route path="profile" element={
+                        <PrivateRoute>
+                            <Profile />
+                        </PrivateRoute>
+                    } />
+
                     <Route path="*" element={<NotFound />} />
                 </Route>
 
                 {/* Admin Routes */}
-                <Route path="/admin/login" element={<Login />} />
-                <Route path="/admin" element={<DashboardLayout />}>
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin" element={
+                    <AdminRoute>
+                        <DashboardLayout />
+                    </AdminRoute>
+                }>
                     <Route index element={<Dashboard />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="packages" element={<PackageList />} />
@@ -66,7 +86,6 @@ const App = () => {
                     <Route path="testimonials/new" element={<TestimonialForm />} />
                     <Route path="testimonials/edit/:id" element={<TestimonialForm />} />
                     <Route path="bookings" element={<BookingList />} />
-                    {/* Add more admin routes here */}
                 </Route>
             </Routes>
         </Router>

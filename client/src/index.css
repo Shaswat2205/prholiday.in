@@ -1,3 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans bg-brand-light text-brand-secondary;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply bg-brand-primary text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-opacity-90 hover:scale-105 active:scale-95 shadow-lg;
+    }
+}
+
+/* Global Animations */
+@keyframes kenburns {
+    0% {
+        transform: scale(1) translate(0, 0);
+    }
+
+    50% {
+        transform: scale(1.1) translate(-1%, -1%);
+    }
+
+    100% {
+        transform: scale(1) translate(0, 0);
+    }
+}
+
+.animate-kenburns {
+    animation: kenburns 40s infinite ease-in-out;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes pulse-soft {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s infinite;
+}
+
+/* Swiper Custom Styles */
+.destination-swiper .swiper-button-next,
+.destination-swiper .swiper-button-prev {
+    color: white !important;
+    background: rgba(255, 107, 53, 0.8) !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+}
+
+.destination-swiper .swiper-button-next:after,
+.destination-swiper .swiper-button-prev:after {
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
+
+.destination-swiper .swiper-button-next:hover,
+.destination-swiper .swiper-button-prev:hover {
+    background: #FF6B35 !important;
+    transform: scale(1.1) !important;
+}
+
+.destination-swiper .swiper-pagination-bullet-active {
+    background: #FF6B35 !important;
+}
+
+.testimonial-swiper .swiper-pagination {
+    bottom: 0px !important;
+}
+
+.testimonial-swiper .swiper-pagination-bullet-active {
+    background: #FF6B35 !important;
+    width: 24px !important;
+    border-radius: 4px !important;
+}
+
+@keyframes bounce-slow {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-bounce-slow {
+    animation: bounce-slow 4s infinite ease-in-out;
+}

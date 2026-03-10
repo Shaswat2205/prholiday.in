@@ -7,19 +7,33 @@ export default {
     theme: {
         extend: {
             colors: {
+                brand: {
+                    primary: '#FF6B35',    // Vibrant Orange
+                    secondary: '#0A1128',  // Deep Navy
+                    accent: '#FFB627',     // Warm Yellow
+                    white: '#FFFFFF',
+                    light: '#F8F9FA',
+                    gray: {
+                        100: '#F1F3F5',
+                        200: '#E9ECEF',
+                        500: '#6C757D',
+                        800: '#343A40',
+                    }
+                },
+                // Keeping existing names for compatibility but updating values to match new theme
                 primary: {
-                    start: '#006466', // Deep Jungle
-                    mid: '#065A60',   // Tropical Teal
-                    end: '#0B525B',   // Deep Sea
+                    start: '#FF6B35',
+                    mid: '#FF8A5B',
+                    end: '#FFA581',
                 },
                 secondary: {
-                    gold: '#FFD166',  // Sun Gold (Logo match)
-                    cyan: '#4CC9F0',  // Vibrant Cyan (Logo match)
-                    accent: '#F72585' // Hibiscus Pink (Pop color)
+                    gold: '#FFB627',
+                    cyan: '#4CC9F0',
+                    accent: '#F72585'
                 }
             },
             fontFamily: {
-                sans: ['Inter', 'sans-serif'],
+                sans: ['Poppins', 'Inter', 'sans-serif'],
             }
         },
     },

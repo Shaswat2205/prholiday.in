@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaClock, FaUser, FaStar, FaMapMarkerAlt, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import SEO from '../components/common/SEO';
 import BookingForm from '../components/packages/BookingForm';
 import ImageGallery from 'react-image-gallery';
 
@@ -8,116 +10,226 @@ const PackageDetail = () => {
     const { id } = useParams();
     const [pkg, setPkg] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('Overview');
 
     useEffect(() => {
         // Mock data fetch
         setTimeout(() => {
             setPkg({
                 _id: id,
-                name: 'Bali Paradise Retreat',
-                description: 'Experience the magic of Bali with stunning beaches, temples, and lush landscapes. This comprehensive package takes you through the heart of Balinese culture and nature.',
+                name: 'Kalahandi Nature Extravaganza',
+                location: 'Odisha, India',
+                description: 'Experience the magic of Kalahandi with stunning temples, and lush landscapes. This comprehensive package takes you through the heart of Tribal culture and nature. Discover hidden waterfalls, ancient shrines, and the vibrant traditions of the local communities.',
                 price: 1200,
                 duration: { days: 7, nights: 6 },
                 maxPax: 10,
                 rating: { average: 4.8, count: 24 },
                 images: [
-                    'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2076&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=2062&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?q=80&w=2076&auto=format&fit=crop'
+                    'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1200&auto=format&fit=crop',
+                    'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?q=80&w=1200&auto=format&fit=crop'
                 ],
                 itinerary: [
-                    "Day 1: Arrival in Denpasar and transfer to Ubud hotel",
-                    "Day 2: Sacred Monkey Forest and Tegallalang Rice Terrace",
-                    "Day 3: Kintamani Volcano and Coffee Plantation",
-                    "Day 4: Transfer to Seminyak, sunset at Tanah Lot Temple",
-                    "Day 5: Free day for beach activities or shopping",
-                    "Day 6: Uluwatu Temple and Kecak Fire Dance",
-                    "Day 7: Departure"
+                    { day: 1, title: "Arrival & Orientation", desc: "Arrival in Denpasar and transfer to Ubud hotel. Welcome dinner with traditional music." },
+                    { day: 2, title: "Nature & Wildlife", desc: "Sacred Monkey Forest and Tegallalang Rice Terrace exploration." },
+                    { day: 3, title: "Volcanic Wonders", desc: "Kintamani Volcano tour and Coffee Plantation visit." },
+                    { day: 4, title: "Coastal Sunset", desc: "Transfer to Seminyak, sunset at Tanah Lot Temple." },
+                    { day: 5, title: "Relaxation", desc: "Free day for beach activities or local shopping." },
+                    { day: 6, title: "Cultural Grandeur", desc: "Uluwatu Temple visit and Kecak Fire Dance performance." },
+                    { day: 7, title: "Farewell", desc: "Final breakfast and departure transfer." }
                 ],
                 inclusions: [
-                    "Airport transfers",
-                    "Accommodation in 4-star hotels",
-                    "Daily breakfast",
-                    "English speaking guide",
-                    "Entrance fees"
+                    "Luxury Transfers", "4-Star Accommodation", "Daily Gourmet Breakfast", "Private Local Guide", "All Activity Fees"
                 ],
                 exclusions: [
-                    "International flights",
-                    "Visa fees",
-                    "Personal expenses",
-                    "Tips"
+                    "Visa Fees", "Personal Tipping", "Travel Insurance", "Lunch & Dinner"
                 ]
             });
             setLoading(false);
-        }, 1000);
+        }, 800);
     }, [id]);
 
-    if (loading) return <div className="pt-32 text-center text-white">Loading...</div>;
-    if (!pkg) return <div className="pt-32 text-center text-white">Package not found</div>;
+    if (loading) return (
+        <div className="pt-32 min-h-screen bg-brand-light flex items-center justify-center">
+            <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+        </div>
+    );
 
-    const galleryImages = pkg.images.map(img => ({
-        original: img,
-        thumbnail: img
-    }));
+    if (!pkg) return <div className="pt-32 text-center text-brand-secondary font-black">Package not found</div>;
+
+    const tabs = ['Overview', 'Itinerary', 'What\'s Included', 'Gallery'];
 
     return (
-        <div className="pt-24 min-h-screen bg-primary-end pb-20">
-            <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    {/* Left Column: Details */}
-                    <div className="lg:col-span-2">
-                        <h1 className="text-4xl font-bold text-white mb-4">{pkg.name}</h1>
-                        <div className="flex items-center space-x-6 text-gray-300 mb-8">
-                            <span className="flex items-center"><FaClock className="mr-2 text-secondary-cyan" /> {pkg.duration.days} Days / {pkg.duration.nights} Nights</span>
-                            <span className="flex items-center"><FaUser className="mr-2 text-secondary-cyan" /> Max {pkg.maxPax} Pax</span>
-                            <span className="flex items-center"><FaStar className="mr-2 text-secondary-gold" /> {pkg.rating.average} ({pkg.rating.count} reviews)</span>
+        <div className="pt-20 min-h-screen bg-brand-light">
+            <SEO title={`${pkg.name} - PRHolidays`} description={pkg.description} />
+
+            {/* Project Hero */}
+            <section className="relative h-[60vh] overflow-hidden">
+                <img src={pkg.images[0]} className="w-full h-full object-cover" alt={pkg.name} />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary via-brand-secondary/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-full p-12">
+                    <div className="container mx-auto px-4">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                        >
+                            <div className="flex items-center gap-2 text-brand-primary text-xs font-black uppercase tracking-[0.3em] mb-4">
+                                <FaMapMarkerAlt /> {pkg.location}
+                            </div>
+                            <h1 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight max-w-4xl">
+                                {pkg.name}
+                            </h1>
+                            <div className="flex flex-wrap items-center gap-6 text-white/80 font-bold text-sm">
+                                <span className="flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl">
+                                    <FaClock className="mr-2 text-brand-primary" /> {pkg.duration.days}D / {pkg.duration.nights}N
+                                </span>
+                                <span className="flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl">
+                                    <FaUser className="mr-2 text-brand-primary" /> Max {pkg.maxPax} Guests
+                                </span>
+                                <span className="flex items-center bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl">
+                                    <FaStar className="mr-2 text-brand-accent" /> {pkg.rating.average} ({pkg.rating.count} Reviews)
+                                </span>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            <div className="container mx-auto px-4 -mt-10 relative z-20">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    {/* Content Column */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Tabs Navigation */}
+                        <div className="flex gap-2 bg-white p-2 rounded-3xl shadow-xl overflow-x-auto no-scrollbar">
+                            {tabs.map(tab => (
+                                <button
+                                    key={tab}
+                                    onClick={() => setActiveTab(tab)}
+                                    className={`px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab
+                                        ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30'
+                                        : 'text-brand-gray-500 hover:text-brand-secondary hover:bg-gray-50'
+                                        }`}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
                         </div>
 
-                        <div className="rounded-xl overflow-hidden mb-8 border border-white/10">
-                            <ImageGallery items={galleryImages} showPlayButton={false} />
-                        </div>
-
-                        <div className="bg-white/5 p-8 rounded-xl border border-white/10 mb-8">
-                            <h2 className="text-2xl font-bold text-white mb-4">Overview</h2>
-                            <p className="text-gray-300 leading-relaxed">{pkg.description}</p>
-                        </div>
-
-                        <div className="bg-white/5 p-8 rounded-xl border border-white/10 mb-8">
-                            <h2 className="text-2xl font-bold text-white mb-4">Itinerary</h2>
-                            <div className="space-y-4">
-                                {pkg.itinerary.map((day, index) => (
-                                    <div key={index} className="flex">
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-secondary-cyan flex items-center justify-center font-bold text-black mt-1">
-                                            {index + 1}
+                        {/* Tab Content */}
+                        <motion.div
+                            key={activeTab}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white p-10 md:p-12 rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100"
+                        >
+                            {activeTab === 'Overview' && (
+                                <div className="space-y-6">
+                                    <h2 className="text-3xl font-black text-brand-secondary">Trip Highlights</h2>
+                                    <p className="text-brand-gray-500 font-medium leading-[2] text-lg">
+                                        {pkg.description}
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-6 pt-6">
+                                        <div className="p-6 bg-brand-light rounded-2xl border border-brand-primary/5">
+                                            <h4 className="font-black text-brand-secondary mb-2">Ideal Duration</h4>
+                                            <p className="text-brand-gray-500 font-bold">{pkg.duration.days} Days</p>
                                         </div>
-                                        <div className="ml-4">
-                                            <p className="text-gray-300">{day}</p>
+                                        <div className="p-6 bg-brand-light rounded-2xl border border-brand-primary/5">
+                                            <h4 className="font-black text-brand-secondary mb-2">Group Size</h4>
+                                            <p className="text-brand-gray-500 font-bold">Up to {pkg.maxPax} People</p>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
+                                </div>
+                            )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                            <div className="bg-green-500/10 p-6 rounded-xl border border-green-500/20">
-                                <h3 className="text-xl font-bold text-white mb-4 flex items-center"><FaCheckCircle className="mr-2 text-green-500" /> Inclusions</h3>
-                                <ul className="space-y-2 text-gray-300">
-                                    {pkg.inclusions.map((item, i) => <li key={i}>• {item}</li>)}
-                                </ul>
-                            </div>
-                            <div className="bg-red-500/10 p-6 rounded-xl border border-red-500/20">
-                                <h3 className="text-xl font-bold text-white mb-4 flex items-center"><FaTimesCircle className="mr-2 text-red-500" /> Exclusions</h3>
-                                <ul className="space-y-2 text-gray-300">
-                                    {pkg.exclusions.map((item, i) => <li key={i}>• {item}</li>)}
-                                </ul>
-                            </div>
-                        </div>
+                            {activeTab === 'Itinerary' && (
+                                <div className="space-y-8">
+                                    {pkg.itinerary.map((day, idx) => (
+                                        <div key={idx} className="flex gap-6 group">
+                                            <div className="flex-shrink-0">
+                                                <div className="w-12 h-12 rounded-2xl bg-brand-primary text-white flex items-center justify-center font-black shadow-lg shadow-brand-primary/20">
+                                                    {day.day}
+                                                </div>
+                                            </div>
+                                            <div className="pb-8 border-b border-gray-100 last:border-0 w-full">
+                                                <h3 className="text-xl font-black text-brand-secondary mb-2 group-hover:text-brand-primary transition-colors">
+                                                    {day.title}
+                                                </h3>
+                                                <p className="text-brand-gray-500 font-medium leading-relaxed">
+                                                    {day.desc}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {activeTab === 'What\'s Included' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div className="space-y-6">
+                                        <h3 className="text-2xl font-black text-brand-secondary flex items-center gap-3">
+                                            <FaCheckCircle className="text-green-500" /> Inclusions
+                                        </h3>
+                                        <ul className="space-y-4">
+                                            {pkg.inclusions.map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3 text-brand-gray-500 font-bold">
+                                                    <span className="w-2 h-2 rounded-full bg-brand-primary"></span>
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="space-y-6">
+                                        <h3 className="text-2xl font-black text-brand-secondary flex items-center gap-3">
+                                            <FaTimesCircle className="text-red-500" /> Exclusions
+                                        </h3>
+                                        <ul className="space-y-4">
+                                            {pkg.exclusions.map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3 text-brand-gray-500 font-bold opacity-60">
+                                                    <span className="w-2 h-2 rounded-full bg-gray-300"></span>
+                                                    {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'Gallery' && (
+                                <div className="grid grid-cols-2 gap-4">
+                                    {pkg.images.map((img, i) => (
+                                        <div key={i} className="h-64 rounded-3xl overflow-hidden shadow-lg border-4 border-white">
+                                            <img src={img} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" alt="" />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </motion.div>
                     </div>
 
-                    {/* Right Column: Booking Form */}
+                    {/* Sidebar Column */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-24">
+                        <div className="sticky top-28 space-y-8">
                             <BookingForm packageId={pkg._id} packageName={pkg.name} price={pkg.price} />
+
+                            <div className="bg-brand-secondary rounded-[2.5rem] p-10 text-white relative overflow-hidden group border border-white/5">
+                                <div className="relative z-10">
+                                    <h3 className="text-xl font-black mb-4">Book with Confidence</h3>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <FaCheckCircle className="text-brand-primary" />
+                                            <span className="text-sm font-bold opacity-80">Free Cancellation</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <FaCheckCircle className="text-brand-primary" />
+                                            <span className="text-sm font-bold opacity-80">24/7 Priority Support</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <FaCheckCircle className="text-brand-primary" />
+                                            <span className="text-sm font-bold opacity-80">Best Price Guarantee</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

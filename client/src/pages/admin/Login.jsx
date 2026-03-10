@@ -2,25 +2,20 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { FaLock, FaUser } from 'react-icons/fa';
-// import { login } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
     const navigate = useNavigate();
+    const { loginAdmin } = useAuth();
     const [error, setError] = useState('');
 
     const onSubmit = async (data) => {
         try {
-            // Mock login for now
-            console.log(data);
-            if (data.email === 'admin@prholidays.in' && data.password === 'password123') {
-                localStorage.setItem('adminToken', 'mock-jwt-token');
-                navigate('/admin/dashboard');
-            } else {
-                setError('Invalid credentials');
-            }
+            await loginAdmin(data.email, data.password);
+            navigate('/admin/dashboard');
         } catch (err) {
-            setError(err.message);
+            setError(err.response?.data?.message || 'Invalid credentials');
         }
     };
 

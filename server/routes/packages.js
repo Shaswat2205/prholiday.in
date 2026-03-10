@@ -6,7 +6,7 @@ const {
     updatePackage,
     deletePackage
 } = require('../controllers/packageController');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -15,8 +15,8 @@ router.get('/', getPackages);
 router.get('/:id', getPackage);
 
 // Protected routes (Admin)
-router.post('/', protect, createPackage);
-router.put('/:id', protect, updatePackage);
-router.delete('/:id', protect, deletePackage);
+router.post('/', protect, authorize('admin'), createPackage);
+router.put('/:id', protect, authorize('admin'), updatePackage);
+router.delete('/:id', protect, authorize('admin'), deletePackage);
 
 module.exports = router;

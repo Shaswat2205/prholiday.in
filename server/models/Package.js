@@ -62,6 +62,14 @@ const PackageSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    category: {
+        type: String,
+        required: [true, 'Please add a category'],
+        enum: ['Spiritual', 'Adventure', 'Nature', 'Heritage', 'Beach', 'Solo Trip', 'Family', 'Luxury', 'Honeymoon', 'Wildlife', 'Cultural']
+    },
+    tags: [{
+        type: String
+    }],
     active: {
         type: Boolean,
         default: true

@@ -148,7 +148,7 @@ const PackageForm = () => {
                     </div>
 
                     <div>
-                        <label className="block text-gray-400 mb-2 font-semibold">Price ($)</label>
+                        <label className="block text-gray-400 mb-2 font-semibold">Price (₹)</label>
                         <input
                             type="number"
                             {...register("price", { required: "Price is required" })}

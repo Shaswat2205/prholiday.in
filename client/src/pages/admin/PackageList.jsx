@@ -79,7 +79,7 @@ const PackageList = () => {
                                         />
                                     </td>
                                     <td className="px-6 py-4 font-medium text-white">{pkg.name}</td>
-                                    <td className="px-6 py-4 text-secondary-gold">${pkg.price}</td>
+                                    <td className="px-6 py-4 text-secondary-gold">₹{pkg.price}</td>
                                     <td className="px-6 py-4">{pkg.duration.days}D/{pkg.duration.nights}N</td>
                                     <td className="px-6 py-4">{pkg.rating.average}</td>
                                     <td className="px-6 py-4 space-x-3">

@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { FaBox, FaMapMarkedAlt, FaImages, FaComment, FaSignOutAlt, FaTachometerAlt } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 
 const DashboardLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.removeItem('adminToken');
+        logout();
         navigate('/admin/login');
     };
 

@@ -5,7 +5,7 @@ const {
     updateTestimonial,
     deleteTestimonial
 } = require('../controllers/testimonialController');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -13,8 +13,8 @@ const router = express.Router();
 router.get('/', getTestimonials);
 
 // Protected routes (Admin)
-router.post('/', protect, createTestimonial);
-router.put('/:id', protect, updateTestimonial);
-router.delete('/:id', protect, deleteTestimonial);
+router.post('/', protect, authorize('admin'), createTestimonial);
+router.put('/:id', protect, authorize('admin'), updateTestimonial);
+router.delete('/:id', protect, authorize('admin'), deleteTestimonial);
 
 module.exports = router;

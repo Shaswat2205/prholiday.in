@@ -6,48 +6,58 @@ import { motion } from 'framer-motion';
 const PackageCard = ({ pkg }) => {
     return (
         <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             whileHover={{ y: -10 }}
-            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:shadow-2xl hover:shadow-secondary-mid/20 transition-all duration-300 group"
+            className="group bg-white rounded-[2.5rem] overflow-hidden shadow-xl shadow-gray-200/50 hover:shadow-2xl hover:shadow-brand-primary/10 transition-all duration-500 border border-gray-100"
         >
             <div className="relative h-64 overflow-hidden">
                 <img
                     src={pkg.images[0] || 'https://via.placeholder.com/400x300?text=Package'}
                     alt={pkg.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute top-4 right-4 bg-secondary-gold text-black font-bold px-3 py-1 rounded-full text-sm">
-                    ${pkg.price}
+                <div className="absolute top-5 transition-all group-hover:top-4 right-5 transition-all group-hover:right-4 bg-white/20 backdrop-blur-md text-white border border-white/30 font-black px-4 py-2 rounded-2xl text-lg shadow-lg">
+                    ₹{pkg.price}
                 </div>
+                {pkg.rating.average >= 4.8 && (
+                    <div className="absolute top-5 left-5 bg-brand-primary text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl shadow-lg animate-pulse-soft">
+                        Trending
+                    </div>
+                )}
             </div>
 
-            <div className="p-6 text-white">
-                <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold truncate">{pkg.name}</h3>
-                    <div className="flex items-center text-secondary-gold text-sm">
-                        <FaStar className="mr-1" />
-                        <span>{pkg.rating.average}</span>
-                    </div>
+            <div className="p-8">
+                <div className="flex items-center gap-2 text-brand-gray-500 text-[10px] font-black uppercase tracking-widest mb-4">
+                    <FaStar className="text-brand-accent" />
+                    <span className="text-brand-secondary">{pkg.rating.average}</span>
+                    <span>•</span>
+                    <span>{pkg.duration.days} Days / {pkg.duration.nights} Nights</span>
                 </div>
 
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">{pkg.description}</p>
+                <h3 className="text-2xl font-black text-brand-secondary mb-4 group-hover:text-brand-primary transition-colors line-clamp-1">
+                    {pkg.name}
+                </h3>
 
-                <div className="flex items-center justify-between text-gray-300 text-sm mb-6">
-                    <div className="flex items-center">
-                        <FaClock className="mr-2 text-secondary-cyan" />
-                        {pkg.duration.days}D/{pkg.duration.nights}N
+                <p className="text-brand-gray-500 text-sm mb-8 line-clamp-2 leading-relaxed font-medium">
+                    {pkg.description}
+                </p>
+
+                <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                    <div className="flex items-center gap-2 text-brand-secondary font-bold text-sm">
+                        <FaUser className="text-brand-primary" />
+                        <span>Up to {pkg.maxPax} px</span>
                     </div>
-                    <div className="flex items-center">
-                        <FaUser className="mr-2 text-secondary-cyan" />
-                        Max {pkg.maxPax}
-                    </div>
+                    <Link
+                        to={`/packages/${pkg._id}`}
+                        className="bg-brand-secondary text-white p-4 rounded-2xl hover:bg-brand-primary transition-all group-hover:px-8 shadow-lg shadow-brand-secondary/20 group-hover:shadow-brand-primary/30"
+                    >
+                        <span className="font-bold flex items-center gap-2 text-sm uppercase tracking-widest">
+                            Explore <span>→</span>
+                        </span>
+                    </Link>
                 </div>
-
-                <Link
-                    to={`/packages/${pkg._id}`}
-                    className="block w-full bg-white/10 hover:bg-gradient-to-r from-secondary-cyan to-blue-600 text-center py-3 rounded-lg font-semibold transition-all"
-                >
-                    View Details
-                </Link>
             </div>
         </motion.div>
     );
