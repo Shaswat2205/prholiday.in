@@ -13,12 +13,12 @@ export const AuthProvider = ({ children }) => {
         if (tokenToUse) {
             try {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${tokenToUse}`;
-                const res = await axios.get('http://localhost:5000/api/users/me');
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/me`);
                 setUser(res.data.data);
                 return res.data.data;
             } catch (err) {
                 try {
-                    const adminRes = await axios.get('http://localhost:5000/api/admin/me');
+                    const adminRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/me`);
                     setUser(adminRes.data.data);
                     return adminRes.data.data;
                 } catch (adminErr) {
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     }, [token]);
 
     const login = async (email, password) => {
-        const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/login`, { email, password });
         localStorage.setItem('token', res.data.token);
         setToken(res.data.token);
         const userData = await loadUser(res.data.token);
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const loginAdmin = async (email, password) => {
-        const res = await axios.post('http://localhost:5000/api/admin/login', { email, password });
+        const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/login`, { email, password });
         localStorage.setItem('token', res.data.token);
         setToken(res.data.token);
         const userData = await loadUser(res.data.token);
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const register = async (userData) => {
-        const res = await axios.post('http://localhost:5000/api/users/register', userData);
+        const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/register`, userData);
         localStorage.setItem('token', res.data.token);
         setToken(res.data.token);
         return res.data;

@@ -40,7 +40,7 @@ const UserDashboard = () => {
 
     const fetchLikedPackages = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/users/liked', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/liked`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setLikedPackages(res.data.data);
@@ -55,7 +55,7 @@ const UserDashboard = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('http://localhost:5000/api/testimonials', {
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials`, {
                 ...testimonial,
                 name: user.name,
                 image: user.avatar
@@ -75,7 +75,7 @@ const UserDashboard = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.put('http://localhost:5000/api/users/updatedetails', profileData, {
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/updatedetails`, profileData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage({ type: 'success', text: 'Profile updated successfully! Refresh to see changes.' });
@@ -91,7 +91,7 @@ const UserDashboard = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post('http://localhost:5000/api/users/gallery', { imageUrl: galleryUrl, quote: galleryQuote }, {
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/gallery`, { imageUrl: galleryUrl, quote: galleryQuote }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage({ type: 'success', text: 'Image added to gallery! Refresh to view.' });

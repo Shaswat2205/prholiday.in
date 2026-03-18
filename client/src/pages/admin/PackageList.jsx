@@ -14,7 +14,7 @@ const PackageList = () => {
 
     const fetchPackages = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/packages');
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages`);
             setPackages(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -32,7 +32,7 @@ const PackageList = () => {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`http://localhost:5000/api/packages/${id}`, config);
+                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages/${id}`, config);
                 setPackages(packages.filter(p => p._id !== id));
             } catch (err) {
                 alert('Error deleting package');

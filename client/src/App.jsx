@@ -15,6 +15,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import PrivateRoute from './components/common/PrivateRoute';
 import AdminRoute from './components/common/AdminRoute';
+import WhatsAppButton from './components/common/WhatsAppButton';
 
 import UserDashboard from './pages/user/Dashboard';
 import DashboardLayout from './components/admin/DashboardLayout';
@@ -42,6 +43,7 @@ const App = () => {
                             <Outlet />
                         </main>
                         <Footer />
+                        <WhatsAppButton />
                     </div>
                 }>
                     <Route index element={<Home />} />

@@ -15,7 +15,7 @@ const TestimonialList = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            const res = await axios.get('http://localhost:5000/api/testimonials/admin', config);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials/admin`, config);
             setTestimonials(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -33,7 +33,7 @@ const TestimonialList = () => {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`http://localhost:5000/api/testimonials/${id}`, config);
+                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials/${id}`, config);
                 setTestimonials(testimonials.filter(t => t._id !== id));
             } catch (err) {
                 alert('Error deleting testimonial');
@@ -46,7 +46,7 @@ const TestimonialList = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            await axios.put(`http://localhost:5000/api/testimonials/${id}`, { status }, config);
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials/${id}`, { status }, config);
             setTestimonials(testimonials.map(t => t._id === id ? { ...t, status } : t));
         } catch (err) {
             alert('Error updating status');

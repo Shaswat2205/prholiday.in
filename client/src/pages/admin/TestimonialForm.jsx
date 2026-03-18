@@ -20,7 +20,7 @@ const TestimonialForm = () => {
 
     const fetchTestimonial = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/testimonials/${id}`);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials/${id}`);
             reset(res.data.data);
         } catch (err) {
             console.error(err);
@@ -39,10 +39,10 @@ const TestimonialForm = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`http://localhost:5000/api/testimonials/${id}`, data, config);
+                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials/${id}`, data, config);
                 alert('Testimonial updated successfully');
             } else {
-                await axios.post('http://localhost:5000/api/testimonials', data, config);
+                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials`, data, config);
                 alert('Testimonial created successfully');
             }
             navigate('/admin/testimonials');
@@ -63,13 +63,13 @@ const TestimonialForm = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post('http://localhost:5000/api/upload', formData, {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             });
-            setValue('image', `http://localhost:5000${res.data.data}`);
+            setValue('image', `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${res.data.data}`);
         } catch (err) {
             console.error(err);
             alert('Upload failed');

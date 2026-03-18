@@ -39,7 +39,7 @@ const BookingForm = ({ packageId, packageName, price }) => {
                 travelers: parseInt(bookingData.travelers)
             };
 
-            await axios.post('http://localhost:5000/api/bookings', finalData);
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, finalData);
             setStep(3);
         } catch (err) {
             console.error(err);

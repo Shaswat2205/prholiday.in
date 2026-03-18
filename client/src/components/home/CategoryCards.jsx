@@ -3,14 +3,11 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const categories = [
+    { name: 'Spiritual', icon: '🙏', path: '/packages?category=spiritual', image: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?q=80&w=400&auto=format&fit=crop' },
     { name: 'Adventure', icon: '🧗', path: '/packages?category=adventure', image: 'https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Beach', icon: '🏖️', path: '/packages?category=beach', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Honeymoon', icon: '👩‍❤️‍👨', path: '/packages?category=honeymoon', image: 'https://images.unsplash.com/photo-1583417319070-4a69db38a482?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Wildlife', icon: '🐘', path: '/packages?category=wildlife', image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Cultural', icon: '⛩️', path: '/packages?category=cultural', image: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Luxury', icon: '💎', path: '/packages?category=luxury', image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Solo Trip', icon: '🎒', path: '/packages?category=solo', image: 'https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=400&auto=format&fit=crop' },
-    { name: 'Family', icon: '👨‍👩‍👧‍👦', path: '/packages?category=family', image: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=400&auto=format&fit=crop' },
+    { name: 'Nature', icon: '🌿', path: '/packages?category=nature', image: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?q=80&w=400&auto=format&fit=crop' },
+    { name: 'Heritage', icon: '🏛️', path: '/packages?category=heritage', image: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=400&auto=format&fit=crop' },
+    { name: 'Beach', icon: '🏖️', path: '/packages?category=beach', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop' }
 ];
 
 const CategoryCards = () => {
@@ -37,7 +34,7 @@ const CategoryCards = () => {
                     </motion.h2>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-6 md:gap-8">
+                <div className="flex flex-wrap justify-center gap-6 md:gap-8">
                     {categories.map((category, index) => (
                         <motion.div
                             key={category.name}

@@ -5,7 +5,7 @@ const Package = require('../models/Package');
 // @access  Public
 exports.getPackages = async (req, res) => {
     try {
-        const packages = await Package.find({ active: true });
+        const packages = await Package.find({ active: true }).populate('destination', 'name country');
         res.status(200).json({ success: true, count: packages.length, data: packages });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Server Error' });

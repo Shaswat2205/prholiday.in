@@ -2,81 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaStar, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
-
-const tours = [
-    {
-        _id: '1',
-        title: 'Spiritual Wonders of Kyoto',
-        location: 'Kyoto, Japan',
-        price: 1299,
-        originalPrice: 1599,
-        rating: 4.9,
-        reviews: 245,
-        duration: '5 Days',
-        image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop',
-        badge: 'Bestseller'
-    },
-    {
-        _id: '2',
-        title: 'Parisian Romance & Gourmet',
-        location: 'Paris, France',
-        price: 999,
-        originalPrice: 1200,
-        rating: 4.8,
-        reviews: 180,
-        duration: '4 Days',
-        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop',
-        badge: 'Featured'
-    },
-    {
-        _id: '3',
-        title: 'Dubai Desert Safari Adventure',
-        location: 'Dubai, UAE',
-        price: 499,
-        originalPrice: 650,
-        rating: 4.7,
-        reviews: 320,
-        duration: '2 Days',
-        image: 'https://images.unsplash.com/photo-1512453979798-5ea90b7cad11?q=80&w=800&auto=format&fit=crop',
-        badge: 'Top Choice'
-    },
-    {
-        _id: '4',
-        title: 'Santorini Sunset Cruise',
-        location: 'Santorini, Greece',
-        price: 750,
-        originalPrice: 900,
-        rating: 5.0,
-        reviews: 150,
-        duration: '3 Days',
-        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=800&auto=format&fit=crop'
-    },
-    {
-        _id: '5',
-        title: 'Bali Jungle Retrear',
-        location: 'Bali, Indonesia',
-        price: 1100,
-        originalPrice: 1400,
-        rating: 4.9,
-        reviews: 410,
-        duration: '6 Days',
-        image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop',
-        badge: 'Eco Friendly'
-    },
-    {
-        _id: '6',
-        title: 'Swiss Alps Hiking Tour',
-        location: 'Interlaken, Switzerland',
-        price: 1800,
-        originalPrice: 2200,
-        rating: 4.9,
-        reviews: 95,
-        duration: '7 Days',
-        image: 'https://images.unsplash.com/photo-1531329844144-03abb0748ee3?q=80&w=800&auto=format&fit=crop'
-    }
-];
+import axios from 'axios';
 
 const PopularToursGrid = () => {
+    const [tours, setTours] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTours = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages`);
+                const packages = res.data.data || [];
+                // Get featured or top 6
+                const featured = packages.filter(p => p.featured);
+                setTours(featured.length > 0 ? featured.slice(0, 6) : packages.slice(0, 6));
+            } catch (err) {
+                console.error('Failed to fetch tours', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTours();
+    }, []);
+
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4">
@@ -106,25 +54,30 @@ const PopularToursGrid = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                    {tours.map((tour, index) => (
+                    {loading ? (
+                        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center py-10">
+                            <div className="animate-spin rounded-full h-12 w-12 border-4 border-brand-primary border-t-transparent"></div>
+                        </div>
+                    ) : (
+                        tours.map((tour, index) => (
                         <motion.div
                             key={tour._id}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100"
+                            className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col"
                         >
                             {/* Image Container */}
-                            <div className="relative h-64 overflow-hidden">
+                            <div className="relative h-64 overflow-hidden shrink-0">
                                 <img
-                                    src={tour.image}
-                                    alt={tour.title}
+                                    src={tour.images && tour.images.length > 0 ? tour.images[0] : 'https://placehold.co/800x600'}
+                                    alt={tour.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
-                                {tour.badge && (
+                                {tour.featured && (
                                     <div className="absolute top-4 left-4 bg-brand-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg z-10 animate-pulse-soft">
-                                        {tour.badge}
+                                        Featured
                                     </div>
                                 )}
                                 <button className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-brand-primary transition-all z-10">
@@ -135,32 +88,33 @@ const PopularToursGrid = () => {
                             </div>
 
                             {/* Content */}
-                            <div className="p-6">
+                            <div className="p-6 flex flex-col flex-grow">
                                 <div className="flex items-center gap-2 text-gray-400 text-xs font-bold uppercase mb-3">
                                     <FaMapMarkerAlt className="text-brand-primary" />
-                                    <span>{tour.location}</span>
+                                    <span>{tour.destination?.name || tour.destination || 'Multiple Locations'}</span>
                                 </div>
                                 <h3 className="text-xl font-bold text-brand-secondary mb-3 group-hover:text-brand-primary transition-colors line-clamp-2">
-                                    {tour.title}
+                                    {tour.name}
                                 </h3>
 
-                                <div className="flex items-center gap-4 mb-6">
+                                <div className="flex items-center gap-4 mb-6 mt-auto">
                                     <div className="flex items-center gap-1">
                                         <FaStar className="text-brand-accent text-sm" />
-                                        <span className="text-sm font-bold text-brand-secondary">{tour.rating}</span>
-                                        <span className="text-xs text-brand-gray-500">({tour.reviews})</span>
+                                        <span className="text-sm font-bold text-brand-secondary">{tour.rating?.average || 0}</span>
+                                        <span className="text-xs text-brand-gray-500">({tour.rating?.count || 0})</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-xs text-brand-gray-500 font-medium">
                                         <FaClock />
-                                        <span>{tour.duration}</span>
+                                        <span>{tour.duration?.days} Days / {tour.duration?.nights} Nights</span>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center justify-between pt-4 border-t border-gray-50">
                                     <div>
-                                        <span className="text-xs text-brand-gray-500 line-through block italic">${tour.originalPrice}</span>
+                                        {/* Optional original price representation (e.g. 20% higher) */}
+                                        <span className="text-xs text-brand-gray-500 line-through block italic">₹{Math.floor(tour.price * 1.2)}</span>
                                         <span className="text-2xl font-extrabold text-brand-secondary">
-                                            ${tour.price} <span className="text-xs font-normal text-brand-gray-500">/ person</span>
+                                            ₹{tour.price} <span className="text-xs font-normal text-brand-gray-500">/ person</span>
                                         </span>
                                     </div>
                                     <Link
@@ -174,7 +128,7 @@ const PopularToursGrid = () => {
                                 </div>
                             </div>
                         </motion.div>
-                    ))}
+                    )))}
                 </div>
             </div>
         </section>

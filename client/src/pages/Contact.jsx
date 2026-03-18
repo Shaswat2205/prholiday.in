@@ -10,7 +10,7 @@ const Contact = () => {
 
     const onSubmit = async (data) => {
         try {
-            await axios.post('http://localhost:5000/api/contact', data);
+            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/contact`, data);
             alert('Message sent! We will get back to you soon.');
             reset();
         } catch (err) {

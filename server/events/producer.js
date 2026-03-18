@@ -17,8 +17,10 @@ const sendEvent = async (topic, message) => {
             topic,
             messages: [{ value: JSON.stringify(message) }],
         });
+        return true;
     } catch (error) {
         console.error(`Error sending Kafka event to ${topic}:`, error.message);
+        return false;
     }
 };
 

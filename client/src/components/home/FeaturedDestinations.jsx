@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, Parallax } from 'swiper/modules';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -14,47 +15,20 @@ const FeaturedDestinations = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Mock data
-        setTimeout(() => {
-            setDestinations([
-                {
-                    _id: '1',
-                    name: 'Paris',
-                    country: 'France',
-                    packages: 120,
-                    image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1000&auto=format&fit=crop'
-                },
-                {
-                    _id: '2',
-                    name: 'Kyoto',
-                    country: 'Japan',
-                    packages: 85,
-                    image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=1000&auto=format&fit=crop'
-                },
-                {
-                    _id: '3',
-                    name: 'Santorini',
-                    country: 'Greece',
-                    packages: 64,
-                    image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=1000&auto=format&fit=crop'
-                },
-                {
-                    _id: '4',
-                    name: 'Dubai',
-                    country: 'UAE',
-                    packages: 150,
-                    image: 'https://images.unsplash.com/photo-1512453979798-5ea90b7cad11?q=80&w=1000&auto=format&fit=crop'
-                },
-                {
-                    _id: '5',
-                    name: 'Bali',
-                    country: 'Indonesia',
-                    packages: 200,
-                    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1000&auto=format&fit=crop'
-                }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchDestinations = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations`);
+                const apiDestinations = res.data.data || [];
+                // If there are featured destinations, show them, otherwise show top 6
+                const featured = apiDestinations.filter(d => d.featured);
+                setDestinations(featured.length > 0 ? featured : apiDestinations.slice(0, 6));
+            } catch (err) {
+                console.error('Failed to fetch destinations', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDestinations();
     }, []);
 
     if (loading) {

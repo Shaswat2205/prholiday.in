@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { sendEvent } = require('../events/producer');
 const sendEmail = require('../utils/sendEmail');
+const { getAdminBookingTemplate, getUserBookingTemplate } = require('../utils/emailTemplates');
 
 // @desc    Create new booking inquiry
 // @route   POST /api/bookings
@@ -30,30 +31,29 @@ exports.createBooking = async (req, res) => {
         const booking = await Booking.create(bookingData);
         
         // Dispatch event softly (don't fail request if Kafka is down)
-        sendEvent('booking.created', booking).catch(e => console.error('Kafka send err:', e.message));
+        // This now triggers the background email jobs via server/events/consumer.js
+        const eventSent = await sendEvent('booking.created', booking);
 
-        // Notify Admin of new booking
-        if (process.env.ADMIN_EMAIL) {
-            try {
-                await sendEmail({
+        // FALLBACK: If Kafka is down, send emails directly so the user/admin still get notified
+        if (!eventSent) {
+            console.log('[Fallback] Kafka down, sending emails directly...');
+            
+            // 1. Send to Admin
+            if (process.env.ADMIN_EMAIL) {
+                sendEmail({
                     email: process.env.ADMIN_EMAIL,
-                    subject: 'New Booking Inquiry - PRHolidays',
-                    message: `A new booking inquiry has been received from ${booking.name}.\nPackage: ${booking.packageName}\nTravelers: ${booking.travelers}\nTravel Date: ${booking.travelDate ? new Date(booking.travelDate).toLocaleDateString() : 'TBD'}`,
-                    html: `
-                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                            <h2 style="color: #0b9185;">New Booking Inquiry!</h2>
-                            <p><strong>Name:</strong> ${booking.name}</p>
-                            <p><strong>Email:</strong> ${booking.email}</p>
-                            <p><strong>Phone:</strong> ${booking.phone}</p>
-                            <p><strong>Package:</strong> ${booking.packageName}</p>
-                            <p><strong>Travel Date:</strong> ${booking.travelDate ? new Date(booking.travelDate).toLocaleDateString() : 'TBD'}</p>
-                            <p><strong>Travelers:</strong> ${booking.travelers}</p>
-                            <p style="margin-top: 20px;"><em>You can manage this booking directly from your Admin Dashboard.</em></p>
-                        </div>
-                    `
-                });
-            } catch (err) {
-                console.error("Admin Email Failed", err);
+                    subject: 'New Booking Inquiry (Fallback) - PRHolidays',
+                    html: getAdminBookingTemplate(booking)
+                }).catch(e => console.error('[Fallback] Admin Email Err:', e.message));
+            }
+
+            // 2. Send to User
+            if (booking.email) {
+                sendEmail({
+                    email: booking.email,
+                    subject: 'We Received Your Booking Inquiry! - PRHolidays',
+                    html: getUserBookingTemplate(booking)
+                }).catch(e => console.error('[Fallback] User Email Err:', e.message));
             }
         }
 
@@ -93,6 +93,7 @@ exports.getBookings = async (req, res) => {
 exports.updateBookingStatus = async (req, res) => {
     try {
         const { status } = req.body;
+        console.log(`[Update] Booking ${req.params.id} status update requested: ${status}`);
 
         const booking = await Booking.findByIdAndUpdate(
             req.params.id,
@@ -104,29 +105,19 @@ exports.updateBookingStatus = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
 
-        if (status === 'confirmed' && booking.email) {
-            try {
-                await sendEmail({
-                    email: booking.email,
-                    subject: 'Adventure Confirmed! - PRHolidays',
-                    message: `Dear ${booking.name},\n\nYour adventure for ${booking.packageName || 'a package'} has been confirmed!\n\nTravel Date: ${booking.travelDate ? new Date(booking.travelDate).toLocaleDateString() : 'TBD'}\nTravelers: ${booking.travelers}\n\nOur team is excited to host you. Please reply to this email if you have any questions.\n\nBest regards,\nThe PRHolidays Team`,
-                    html: `
-                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                            <h2 style="color: #0b9185;">Adventure Confirmed!</h2>
-                            <p>Dear ${booking.name},</p>
-                            <p>Great news! Your booking for <strong>${booking.packageName || 'a package'}</strong> has been confirmed.</p>
-                            <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                                <p style="margin: 5px 0;"><strong>Travel Date:</strong> ${booking.travelDate ? new Date(booking.travelDate).toLocaleDateString() : 'TBD'}</p>
-                                <p style="margin: 5px 0;"><strong>Travelers:</strong> ${booking.travelers}</p>
-                            </div>
-                            <p>Our team is excited to carefully craft your experience. We will follow up shortly with further itinerary instructions.</p>
-                            <p>Best regards,<br><strong>The PRHolidays Team</strong></p>
-                        </div>
-                    `
-                });
-            } catch (emailErr) {
-                console.error('Email sending failed:', emailErr);
-            }
+        // Trigger background notification or fallback
+        console.log(`[Update] Dispatching Kafka event for status: ${booking.status}`);
+        const eventSent = await sendEvent('booking.updated', booking);
+        console.log(`[Update] Kafka event sent: ${eventSent}`);
+
+        if (!eventSent && booking.email) {
+            console.log('[Update][Fallback] Kafka down, sending status update email directly...');
+            sendEmail({
+                email: booking.email,
+                subject: `Booking Status Update: ${booking.status.toUpperCase()} - PRHolidays`,
+                html: getStatusChangeTemplate(booking)
+            }).then(() => console.log('[Update][Fallback] Email success'))
+              .catch(e => console.error('[Update][Fallback] Status Email Err:', e.message));
         }
 
         res.status(200).json({ success: true, data: booking });

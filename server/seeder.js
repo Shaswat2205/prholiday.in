@@ -12,8 +12,8 @@ connectDB();
 // Build Admin User
 const adminUser = {
     username: 'admin',
-    email: 'admin@prholidays.in',
-    password: 'password123',
+    email: 'admin@prholiday.in',
+    password: 'admin2205',
     role: 'admin'
 };
 
@@ -26,7 +26,7 @@ const importData = async () => {
         // Create admin
         await Admin.create(adminUser);
 
-        console.log('Data Imported! Admin Created: admin@prholidays.in / password123');
+        console.log('Data Imported! Admin Created: admin@prholiday.in / admin2205');
         process.exit();
     } catch (error) {
         console.error(`${error}`);

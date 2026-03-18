@@ -14,7 +14,7 @@ const UserList = () => {
         try {
             const token = localStorage.getItem('token');
             const config = { headers: { Authorization: `Bearer ${token}` } };
-            const res = await axios.get('http://localhost:5000/api/users', config);
+            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users`, config);
             setUsers(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -28,7 +28,7 @@ const UserList = () => {
             try {
                 const token = localStorage.getItem('token');
                 const config = { headers: { Authorization: `Bearer ${token}` } };
-                await axios.delete(`http://localhost:5000/api/users/${id}`, config);
+                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/users/${id}`, config);
                 setUsers(users.filter(u => u._id !== id));
             } catch (err) {
                 alert('Error deleting user');
