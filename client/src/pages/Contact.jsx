@@ -126,21 +126,32 @@ const Contact = () => {
                                 <div>
                                     <label className="block text-brand-secondary font-black text-[10px] uppercase tracking-widest mb-2 ml-1">Email Address</label>
                                     <input
-                                        {...register("email", { required: true })}
+                                        {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
                                         placeholder="email@example.com"
                                         className="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-brand-secondary focus:border-brand-primary/30 focus:bg-white focus:outline-none transition-all font-bold"
                                     />
-                                    {errors.email && <span className="text-red-500 text-[10px] font-bold mt-1 block">Email is required</span>}
+                                    {errors.email && <span className="text-red-500 text-[10px] font-bold mt-1 block">Valid email is required</span>}
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-brand-secondary font-black text-[10px] uppercase tracking-widest mb-2 ml-1">Subject</label>
-                                <input
-                                    {...register("subject")}
-                                    placeholder="What are you interested in?"
-                                    className="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-brand-secondary focus:border-brand-primary/30 focus:bg-white focus:outline-none transition-all font-bold"
-                                />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-brand-secondary font-black text-[10px] uppercase tracking-widest mb-2 ml-1">Phone Number</label>
+                                    <input
+                                        {...register("phone", { required: true, pattern: /^[0-9+ ]+$/ })}
+                                        placeholder="+91 00000 00000"
+                                        className="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-brand-secondary focus:border-brand-primary/30 focus:bg-white focus:outline-none transition-all font-bold"
+                                    />
+                                    {errors.phone && <span className="text-red-500 text-[10px] font-bold mt-1 block">Valid phone number is required</span>}
+                                </div>
+                                <div>
+                                    <label className="block text-brand-secondary font-black text-[10px] uppercase tracking-widest mb-2 ml-1">Subject</label>
+                                    <input
+                                        {...register("subject")}
+                                        placeholder="What are you interested in?"
+                                        className="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-6 py-4 text-brand-secondary focus:border-brand-primary/30 focus:bg-white focus:outline-none transition-all font-bold"
+                                    />
+                                </div>
                             </div>
 
                             <div>

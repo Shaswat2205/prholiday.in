@@ -1,8 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaInstagram } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 
 const Footer = () => {
+    const { user } = useAuth();
+
+    const supportLinks = ['Privacy Policy', 'Terms of Service', 'FAQ', 'Admin Login'].filter(
+        item => item !== 'Admin Login' || !user
+    );
+
     return (
         <footer className="bg-brand-secondary pt-24 pb-12 text-white relative overflow-hidden">
             <div className="container mx-auto px-4 relative z-10">
@@ -23,14 +30,13 @@ const Footer = () => {
                         </p>
                         <div className="flex space-x-4">
                             {[
-                                { Icon: FaFacebook, color: 'hover:bg-[#1877F2]' },
-                                { Icon: FaTwitter, color: 'hover:bg-[#1DA1F2]' },
-                                { Icon: FaInstagram, color: 'hover:bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]' },
-                                { Icon: FaLinkedin, color: 'hover:bg-[#0A66C2]' }
-                            ].map(({ Icon, color }, idx) => (
+                                { Icon: FaInstagram, color: 'hover:bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]', url: 'https://www.instagram.com/pr_holidayss' }
+                            ].map(({ Icon, color, url }, idx) => (
                                 <a
                                     key={idx}
-                                    href="#"
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className={`w-10 h-10 rounded-full border border-white/20 flex items-center justify-center transition-all duration-300 hover:border-transparent ${color}`}
                                 >
                                     <Icon size={18} />
@@ -66,10 +72,10 @@ const Footer = () => {
                             <span className="absolute -bottom-2 left-0 w-12 h-1 bg-brand-primary rounded-full"></span>
                         </h3>
                         <ul className="space-y-4">
-                            {['Privacy Policy', 'Terms of Service', 'FAQ', 'Admin Login'].map((item) => (
+                            {supportLinks.map((item) => (
                                 <li key={item}>
                                     <Link
-                                        to={item === 'Admin Login' ? '/admin' : `/${item.toLowerCase().replace(' ', '-')}`}
+                                        to={item === 'Admin Login' ? '/login' : `/${item.toLowerCase().replace(' ', '-')}`}
                                         className="text-white/60 hover:text-brand-primary hover:translate-x-2 transition-all inline-block font-medium"
                                     >
                                         {item}
@@ -93,7 +99,7 @@ const Footer = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </div>
-                                <p className="text-white/60 font-medium">123 Adventure Way, <br />Holiday City, HC 12345</p>
+                                <p className="text-white/60 font-medium">Opposite Boyanika, Bhawanipatna <br />Kalahandi,Odisha,766001</p>
                             </div>
                             <div className="flex items-start gap-4">
                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-brand-primary shrink-0">
@@ -101,7 +107,7 @@ const Footer = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                     </svg>
                                 </div>
-                                <p className="text-white/60 font-medium">+1 (234) 567-890</p>
+                                <p className="text-white/60 font-medium">+91 7809394966</p>
                             </div>
                         </div>
                     </div>
@@ -109,7 +115,7 @@ const Footer = () => {
 
                 <div className="border-t border-white/10 pt-12 text-center">
                     <p className="text-white/40 text-sm font-medium">
-                        &copy; {new Date().getFullYear()} PRHolidays. Crafted with ❤️ for dreamers worldwide.
+                        &copy; {new Date().getFullYear()} PRHoliday.in Crafted with ❤️ for Travellers worldwide.
                     </p>
                 </div>
             </div>

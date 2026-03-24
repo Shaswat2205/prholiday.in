@@ -1,41 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaQuoteLeft, FaStar } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import axios from 'axios';
 
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 
-const testimonials = [
-    {
-        id: 1,
-        name: 'Anisha Verma',
-        role: 'Travel Enthusiast',
-        rating: 5,
-        text: 'PRHolidays made our honeymoon absolutely magical. The attention to detail and personalized service was outstanding! Every moment was curated with care.',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop'
-    },
-    {
-        id: 2,
-        name: 'Rajat Sharma',
-        role: 'Adventure Seeker',
-        rating: 5,
-        text: 'The Spiti Valley tour was perfectly organized. The guides were knowledgeable and the views were breathtaking. A truly life-changing adventure!',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop'
-    },
-    {
-        id: 3,
-        name: 'Bhawani Singh',
-        role: 'Family Traveler',
-        rating: 5,
-        text: 'Great family package to Kerala. Everything was taken care of, allowing us to just relax and enjoy our vacation. The kids loved every bit of it!',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format&fit=crop'
-    }
-];
-
 const Testimonials = () => {
+    const [testimonials, setTestimonials] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchTestimonials = async () => {
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials`);
+                setTestimonials(res.data.data);
+            } catch (err) {
+                console.error('Error fetching testimonials:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTestimonials();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="py-24 bg-white flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-primary"></div>
+            </div>
+        );
+    }
+
+    if (!loading && testimonials.length === 0) {
+        return null; // Or show a default section if preferred
+    }
+
     return (
         <section className="py-24 bg-white overflow-hidden">
             <div className="container mx-auto px-4">
@@ -69,12 +73,12 @@ const Testimonials = () => {
                         className="testimonial-swiper"
                     >
                         {testimonials.map((item) => (
-                            <SwiperSlide key={item.id}>
+                            <SwiperSlide key={item._id}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center p-8 md:p-16 bg-brand-light rounded-[3rem] shadow-inner">
                                     <div className="relative group">
                                         <div className="relative w-full aspect-square md:aspect-auto md:h-[400px] rounded-[2.5rem] overflow-hidden shadow-2xl">
                                             <img
-                                                src={item.image}
+                                                src={item.image || (item.user && item.user.avatar) || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop'}
                                                 alt={item.name}
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                             />
@@ -99,11 +103,11 @@ const Testimonials = () => {
                                             ))}
                                         </div>
                                         <p className="text-xl md:text-2xl font-medium text-brand-secondary italic leading-relaxed">
-                                            "{item.text}"
+                                            "{item.review}"
                                         </p>
                                         <div>
                                             <h3 className="text-2xl font-extrabold text-brand-secondary">{item.name}</h3>
-                                            <p className="text-brand-primary font-bold">{item.role}</p>
+                                            <p className="text-brand-primary font-bold">Verified Traveler</p>
                                         </div>
                                     </div>
                                 </div>

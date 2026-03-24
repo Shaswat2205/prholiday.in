@@ -13,6 +13,9 @@ import About from './pages/About';
 import Testimonials from './pages/Testimonials';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import FAQ from './pages/FAQ';
 import PrivateRoute from './components/common/PrivateRoute';
 import AdminRoute from './components/common/AdminRoute';
 import WhatsAppButton from './components/common/WhatsAppButton';
@@ -58,6 +61,9 @@ const App = () => {
                     {/* Auth Routes */}
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
+                    <Route path="privacy-policy" element={<PrivacyPolicy />} />
+                    <Route path="terms-of-service" element={<TermsOfService />} />
+                    <Route path="faq" element={<FAQ />} />
 
                     {/* Protected User Routes */}
                     <Route path="dashboard" element={

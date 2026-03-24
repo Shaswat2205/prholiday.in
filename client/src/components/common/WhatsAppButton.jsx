@@ -4,10 +4,8 @@ import { FaWhatsapp } from 'react-icons/fa';
 
 const WhatsAppButton = () => {
     // Replace with the actual admin WhatsApp number
-    const phoneNumber = '918895499570'; 
-    const message = encodeURIComponent(`Hello PRHoliday.in!,
-I feel it’s time to escape, explore, and create new memories.
-Can you help me plan a journey worth remembering?`);
+    const phoneNumber = '917809394966'; 
+    const message = encodeURIComponent(`Hello PRHoliday.in! 👋 I'm planning my next adventure and would love your expert help in creating a custom itinerary. Can you help me plan a journey worth remembering? 🌍`);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
     return (

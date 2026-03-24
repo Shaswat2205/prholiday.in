@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PackageCard from '../components/common/PackageCard';
+import { FaMapMarkerAlt } from 'react-icons/fa';
+import SEO from '../components/common/SEO';
+import { motion } from 'framer-motion';
+import axios from 'axios';
 
 const DestinationDetail = () => {
     const { id } = useParams();
@@ -9,40 +13,23 @@ const DestinationDetail = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Mock data fetch
-        setTimeout(() => {
-            setDestination({
-                _id: id,
-                name: 'Bali',
-                country: 'Indonesia',
-                description: 'Bali is an Indonesian island known for its forested volcanic mountains, iconic rice paddies, beaches and coral reefs. The island is home to religious sites such as cliffside Uluwatu Temple. Discover the magic of Ubud and the vibes of Seminyak.',
-                image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop'
-            });
-            // Mock related packages
-            setPackages([
-                {
-                    _id: '1',
-                    name: 'Bali Paradise Retreat',
-                    description: 'The ultimate Bali experience.',
-                    price: 1200,
-                    duration: { days: 7, nights: 6 },
-                    maxPax: 10,
-                    rating: { average: 4.8 },
-                    images: ['https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=1200&auto=format&fit=crop']
-                },
-                {
-                    _id: '2',
-                    name: 'Ubud Cultural Tour',
-                    description: 'Immerse yourself in Balinese culture.',
-                    price: 850,
-                    duration: { days: 4, nights: 3 },
-                    maxPax: 6,
-                    rating: { average: 4.9 },
-                    images: ['https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1200&auto=format&fit=crop']
-                }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchDestinationData = async () => {
+            try {
+                // Fetch destination details
+                const destRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations/${id}`);
+                setDestination(destRes.data.data);
+
+                // Fetch related packages
+                const pkgRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages?destination=${id}`);
+                setPackages(pkgRes.data.data);
+            } catch (err) {
+                console.error('Error fetching destination data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchDestinationData();
     }, [id]);
 
     if (loading) return (
@@ -86,7 +73,7 @@ const DestinationDetail = () => {
                     viewport={{ once: true }}
                     className="bg-white p-10 md:p-16 rounded-[3rem] shadow-2xl shadow-gray-200/50 border border-gray-100 max-w-5xl mx-auto mb-20"
                 >
-                    <h2 className="text-2xl font-black text-brand-secondary mb-8 uppercase tracking-widest text-center">About Island</h2>
+                    <h2 className="text-2xl font-black text-brand-secondary mb-8 uppercase tracking-widest text-center">About {destination.name}</h2>
                     <p className="text-brand-gray-500 font-medium leading-[2.2] text-xl text-center italic">
                         "{destination.description}"
                     </p>

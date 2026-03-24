@@ -1,24 +1,46 @@
 version: '3.9'
-services:
 
+services:
+  # ── Main Application (Frontend + Backend Built Together) ───────────
+  app:
+    build: .
+    restart: always
+    ports:
+      - '5000:5000'
+    env_file:
+      - server/.env
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongo:27017/prholiday
+      - REDIS_URL=redis://redis:6379/
+      - KAFKA_BROKERS=kafka:9092
+    depends_on:
+      - mongo
+      - redis
+      - kafka
 
   # ── Databases & Messaging ─────────────────────────────────────────
   mongo:
     image: 'mongo:7'
-    ports: ['27017:27017']
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+    # Note: Port 27017 is NOT exposed publicly for security. 
+    # It communicates with the app service safely inside the Docker network.
 
   redis:
     image: 'redis:7-alpine'
-    ports: ['6379:6379']
+    restart: always
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    restart: always
     environment: { ZOOKEEPER_CLIENT_PORT: 2181 }
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     depends_on: [zookeeper]
-    ports: ['9092:9092', '29092:29092']
+    restart: always
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -31,4 +53,22 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports: ['8080:8080']
+    restart: always
     environment: { KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 }
+
+  # ── Reverse Proxy (SSL & Domain Routing) ──────────────────────────
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'    # Public HTTP
+      - '81:81'    # Admin Web Interface
+      - '443:443'  # Public HTTPS
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+
+volumes:
+  mongo_data:
+  npm_data:
+  npm_letsencrypt:

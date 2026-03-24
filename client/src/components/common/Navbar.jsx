@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaUserAlt, FaSignOutAlt } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
@@ -10,7 +10,13 @@ const Navbar = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
     const { user, logout } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
 
     // Handle scroll effect
     useEffect(() => {
@@ -58,18 +64,32 @@ const Navbar = () => {
                 {/* Desktop Menu & Search */}
                 <div className="hidden lg:flex items-center space-x-10">
                     <div className="flex space-x-8">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                to={link.path}
-                                className={`relative group font-black text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${scrolled ? 'text-brand-secondary' : 'text-white'
-                                    }`}
-                            >
-                                {link.name}
-                                <span className={`absolute -bottom-1 left-1/2 w-0 h-0.5 bg-brand-primary transition-all duration-300 group-hover:w-full group-hover:left-0 ${location.pathname === link.path ? 'w-full left-0' : ''
-                                    }`}></span>
-                            </Link>
-                        ))}
+                        {navLinks.map((link) => {
+                            const isActive = link.path === '/'
+                                ? location.pathname === '/'
+                                : location.pathname.startsWith(link.path);
+
+                            return (
+                                <Link
+                                    key={link.name}
+                                    to={link.path}
+                                    className={`relative py-2 font-black text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${scrolled ? 'text-brand-secondary' : 'text-white'
+                                        } hover:text-brand-primary`}
+                                >
+                                    {link.name}
+                                    {isActive ? (
+                                        <motion.div
+                                            layoutId="navUnderline"
+                                            className="absolute -bottom-1 left-0 right-0 h-0.5 bg-brand-primary"
+                                            initial={false}
+                                            transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                                        />
+                                    ) : (
+                                        <span className="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-brand-primary transition-all duration-300 group-hover:w-full group-hover:left-0"></span>
+                                    )}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Auth Actions */}
@@ -99,7 +119,7 @@ const Navbar = () => {
                                                 <FaUserAlt className="text-brand-primary group-hover:scale-110 transition-transform" /> {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
                                             </Link>
                                             <button
-                                                onClick={logout}
+                                                onClick={handleLogout}
                                                 className="flex items-center gap-3 px-6 py-4 rounded-2xl hover:bg-red-50 transition-all text-red-500 font-bold text-sm group"
                                             >
                                                 <FaSignOutAlt className="group-hover:translate-x-1 transition-transform" /> Logout

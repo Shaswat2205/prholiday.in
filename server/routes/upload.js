@@ -6,6 +6,27 @@ const router = express.Router();
 // @desc    Upload file
 // @route   POST /api/upload
 // @access  Private (Admin)
+/**
+ * @swagger
+ * /api/upload:
+ *   post:
+ *     summary: Upload a file (Admin)
+ *     tags: [Upload]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: File uploaded successfully
+ */
 router.post('/', protect, upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'No file uploaded' });

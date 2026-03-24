@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const connectDB = require('./config/db');
+const setupSwagger = require('./config/swagger');
 
 // Load env vars
 dotenv.config();
@@ -12,6 +13,9 @@ dotenv.config();
 connectDB();
 
 const app = express();
+
+// Swagger Documentation
+setupSwagger(app);
 
 // Middleware
 app.use(express.json());

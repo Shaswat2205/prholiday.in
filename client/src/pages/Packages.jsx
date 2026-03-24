@@ -147,9 +147,14 @@ const Packages = () => {
                             <div className="relative z-10">
                                 <h3 className="text-xl font-black mb-4 group-hover:text-brand-primary transition-colors">Need Help?</h3>
                                 <p className="text-white/60 font-medium text-sm mb-6">Talk to our travel experts for personalized planning.</p>
-                                <button className="w-full bg-white/10 hover:bg-white/20 p-4 rounded-2xl font-bold transition-all border border-white/10">
+                                <a 
+                                    href={`https://wa.me/917809394966?text=${encodeURIComponent("Hello PRHoliday.in! 👋 I'm planning my next adventure and would love your expert help in creating a custom itinerary. Can you help me plan a journey worth remembering? 🌍")}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full bg-white/10 hover:bg-white/20 p-4 rounded-2xl font-bold transition-all border border-white/10 flex items-center justify-center"
+                                >
                                     Contact Advisor
-                                </button>
+                                </a>
                             </div>
                             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-primary/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 transition-transform group-hover:scale-150"></div>
                         </div>

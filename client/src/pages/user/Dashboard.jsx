@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 const UserDashboard = () => {
     const { user, token } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
-    const [testimonial, setTestimonial] = useState({ rating: 5, comment: '' });
+    const [testimonial, setTestimonial] = useState({ rating: 5, review: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
     
@@ -63,7 +63,7 @@ const UserDashboard = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setMessage({ type: 'success', text: 'Thank you for your feedback! It has been submitted for review.' });
-            setTestimonial({ rating: 5, comment: '' });
+            setTestimonial({ rating: 5, review: '' });
         } catch (err) {
             setMessage({ type: 'error', text: 'Failed to submit testimonial. Please try again.' });
         } finally {
@@ -280,8 +280,8 @@ const UserDashboard = () => {
                                         <div>
                                             <label className="block text-brand-secondary font-black text-[10px] uppercase tracking-widest mb-2 ml-1">Your Story</label>
                                             <textarea
-                                                value={testimonial.comment}
-                                                onChange={(e) => setTestimonial({ ...testimonial, comment: e.target.value })}
+                                                value={testimonial.review}
+                                                onChange={(e) => setTestimonial({ ...testimonial, review: e.target.value })}
                                                 required
                                                 rows="5"
                                                 className="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl p-6 text-brand-secondary focus:border-brand-primary/30 focus:bg-white focus:outline-none transition-all font-bold"

@@ -5,7 +5,14 @@ const Package = require('../models/Package');
 // @access  Public
 exports.getPackages = async (req, res) => {
     try {
-        const packages = await Package.find({ active: true }).populate('destination', 'name country');
+        let query = { active: true };
+        
+        // Filter by destination if provided
+        if (req.query.destination) {
+            query.destination = req.query.destination;
+        }
+
+        const packages = await Package.find(query).populate('destination', 'name country');
         res.status(200).json({ success: true, count: packages.length, data: packages });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Server Error' });

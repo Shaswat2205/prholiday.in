@@ -11,7 +11,37 @@ const { protect, authorize } = require('../middleware/auth');
 const router = express.Router();
 
 // Public routes
+/**
+ * @swagger
+ * /api/packages:
+ *   get:
+ *     summary: Get all packages
+ *     tags: [Packages]
+ *     responses:
+ *       200:
+ *         description: List of packages retrieved successfully
+ */
 router.get('/', getPackages);
+
+/**
+ * @swagger
+ * /api/packages/{id}:
+ *   get:
+ *     summary: Get a single package by ID
+ *     tags: [Packages]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Package ID
+ *     responses:
+ *       200:
+ *         description: Package retrieved successfully
+ *       404:
+ *         description: Package not found
+ */
 router.get('/:id', getPackage);
 
 // Protected routes (Admin)

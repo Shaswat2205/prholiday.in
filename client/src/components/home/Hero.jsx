@@ -4,6 +4,17 @@ import { FaSearch } from 'react-icons/fa';
 
 const Hero = () => {
     const [activeTab, setActiveTab] = useState('tours');
+    const [videoIndex, setVideoIndex] = useState(0);
+
+    const videos = [
+        '/videos/beach.mp4',
+        '/videos/forest.mp4',
+        '/videos/mountain.mp4'
+    ];
+
+    const handleVideoEnd = () => {
+        setVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
+    };
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -27,11 +38,18 @@ const Hero = () => {
 
     return (
         <div className="relative h-[90vh] min-h-[700px] flex items-center justify-center overflow-hidden">
-            {/* Background with Ken Burns Effect */}
-            <div className="absolute inset-0 z-0">
-                <div
-                    className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1506929113675-b92417bbbe8e?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center animate-kenburns"
-                />
+            {/* Dynamic Video Background */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+                <video
+                    key={videos[videoIndex]}
+                    autoPlay
+                    muted
+                    onEnded={handleVideoEnd}
+                    className="absolute inset-0 w-full h-full object-cover animate-kenburns scale-110"
+                    style={{ filter: 'brightness(0.7)' }}
+                >
+                    <source src={videos[videoIndex]} type="video/mp4" />
+                </video>
                 <div className="absolute inset-0 bg-brand-secondary/40 backdrop-blur-[2px]"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-secondary/20 to-brand-secondary/60"></div>
             </div>

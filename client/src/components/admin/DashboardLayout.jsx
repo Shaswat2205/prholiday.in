@@ -10,7 +10,7 @@ const DashboardLayout = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/admin/login');
+        navigate('/');
     };
 
     const navItems = [
