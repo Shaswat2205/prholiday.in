@@ -85,9 +85,10 @@ const Testimonials = () => {
                                 {(() => {
                                     const isInstaMedia = testimonial.image && (testimonial.image.includes('instagram.com/p/') || testimonial.image.includes('instagram.com/reel/'));
                                     if (isInstaMedia) {
-                                        let embedUrl = testimonial.image.split('?')[0];
-                                        if (!embedUrl.endsWith('/')) embedUrl += '/';
-                                        embedUrl += 'embed';
+                                        // Ensure https and clean URL
+                                        let cleanUrl = testimonial.image.split('?')[0].replace('http://', 'https://');
+                                        if (!cleanUrl.endsWith('/')) cleanUrl += '/';
+                                        const embedUrl = `${cleanUrl}embed`;
                                         return (
                                             <div className="w-full rounded-xl overflow-hidden shadow-inner mb-6 relative z-10 bg-gray-50 aspect-[4/5] min-h-[350px]">
                                                 <iframe 
@@ -95,6 +96,8 @@ const Testimonials = () => {
                                                     className="w-full h-full border-none"
                                                     frameBorder="0" 
                                                     scrolling="no" 
+                                                    allowTransparency="true"
+                                                    allowFullScreen="true"
                                                     title={`Instagram by ${testimonial.name}`}
                                                 ></iframe>
                                             </div>
