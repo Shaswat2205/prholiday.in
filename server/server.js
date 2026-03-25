@@ -24,6 +24,17 @@ app.use(express.urlencoded({ extended: true }));
 // Security headers
 app.use(helmet({
     crossOriginResourcePolicy: false,
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://*"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://*"],
+            imgSrc: ["'self'", "data:", "blob:", "https://*", "http://*"],
+            frameSrc: ["'self'", "https://*"],
+            fontSrc: ["'self'", "https://*", "data:"],
+            connectSrc: ["'self'", "ws:", "wss:", "http:", "https:"]
+        }
+    }
 }));
 
 // CORS config
