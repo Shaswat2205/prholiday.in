@@ -33,7 +33,7 @@ const DestinationDetail = () => {
     }, [id]);
 
     if (loading) return (
-        <div className="pt-32 min-h-screen bg-brand-light flex items-center justify-center">
+        <div className="pt-32 min-h-screen bg-transparent flex items-center justify-center">
             <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
@@ -41,7 +41,7 @@ const DestinationDetail = () => {
     if (!destination) return <div className="pt-32 text-center text-brand-secondary font-black">Destination not found</div>;
 
     return (
-        <div className="min-h-screen bg-brand-light pb-20">
+        <div className="min-h-screen bg-transparent pb-20">
             <SEO title={`${destination.name} - PRHolidays`} description={destination.description} />
 
             {/* Hero for Destination */}

@@ -20,7 +20,7 @@ const Contact = () => {
     };
 
     return (
-        <div className="pt-28 min-h-screen bg-brand-light pb-20">
+        <div className="pt-28 min-h-screen bg-transparent pb-20">
             <SEO
                 title="Contact Us - PRHolidays"
                 description="Get in touch with PRHolidays for inquiries, bookings, and travel support."

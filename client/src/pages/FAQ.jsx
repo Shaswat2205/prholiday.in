@@ -61,7 +61,7 @@ const FAQ = () => {
     ];
 
     return (
-        <div className="pt-28 min-h-screen bg-brand-light pb-20">
+        <div className="pt-28 min-h-screen bg-transparent pb-20">
             <SEO 
                 title="FAQ - PRHolidays"
                 description="Frequently asked questions about bookings, travel prep, and our services."

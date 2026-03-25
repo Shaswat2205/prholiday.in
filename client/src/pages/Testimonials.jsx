@@ -27,7 +27,7 @@ const Testimonials = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-brand-light pt-32 pb-20">
+        <div className="min-h-screen bg-transparent pt-32 pb-20">
             <SEO title="Testimonials - PRHolidays" description="Read what our travelers have to say about their PRHolidays experiences." />
             
             <div className="container mx-auto px-4">

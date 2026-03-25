@@ -28,7 +28,7 @@ const PackageDetail = () => {
     }, [id]);
 
     if (loading) return (
-        <div className="pt-32 min-h-screen bg-brand-light flex items-center justify-center">
+        <div className="pt-32 min-h-screen bg-transparent flex items-center justify-center">
             <div className="w-16 h-16 border-4 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
@@ -38,7 +38,7 @@ const PackageDetail = () => {
     const tabs = ['Overview', 'Itinerary', 'What\'s Included', 'Gallery'];
 
     return (
-        <div className="pt-20 min-h-screen bg-brand-light">
+        <div className="pt-20 min-h-screen bg-transparent">
             <SEO title={`${pkg.name} - PRHolidays`} description={pkg.description} />
 
             {/* Project Hero */}

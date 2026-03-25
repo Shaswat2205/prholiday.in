@@ -22,7 +22,7 @@ const FeatureCard = ({ icon, title, description, index }) => (
 
 const About = () => {
     return (
-        <div className="pt-28 min-h-screen bg-brand-light pb-20">
+        <div className="pt-28 min-h-screen bg-transparent pb-20">
             <SEO
                 title="About Us - PRHolidays"
                 description="Learn more about PRHolidays, our mission to create unforgettable travel experiences."

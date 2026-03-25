@@ -1,0 +1,30 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main # Triggers the workflow when you push to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # 1. Navigate to the project directory on the EC2 instance
+          cd /home/${{ secrets.EC2_USERNAME }}/prholiday.in
+          
+          # 2. Make sure the deploy script is executable 
+          chmod +x deploy.sh
+          
+          # 3. Execute the deployment script
+          ./deploy.sh

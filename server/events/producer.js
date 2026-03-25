@@ -1,25 +1,23 @@
-const kafka = require('../config/kafka');
-
-const producer = kafka.producer();
+const { notificationQueue } = require('../config/queue');
 
 const connectProducer = async () => {
-    try {
-        await producer.connect();
-        console.log('Kafka Producer connected');
-    } catch (error) {
-        console.error('Kafka Producer Connection Error:', error.message);
-    }
+    // BullMQ Producer connects automatically via IORedis
+    console.log('BullMQ (Redis) Producer ready');
 };
 
 const sendEvent = async (topic, message) => {
     try {
-        await producer.send({
-            topic,
-            messages: [{ value: JSON.stringify(message) }],
+        // We use the "topic" as the job name in the notifications queue
+        await notificationQueue.add(topic, message, {
+            attempts: 3,
+            backoff: {
+                type: 'exponential',
+                delay: 1000,
+            },
         });
         return true;
     } catch (error) {
-        console.error(`Error sending Kafka event to ${topic}:`, error.message);
+        console.error(`Error adding BullMQ job for ${topic}:`, error.message);
         return false;
     }
 };

@@ -4,62 +4,51 @@ services:
   # ── Main Application (Frontend + Backend Built Together) ───────────
   app:
     build: .
-    restart: always
+    restart: unless-stopped
     ports:
       - '5000:5000'
     env_file:
       - server/.env
     environment:
       - NODE_ENV=production
-      - MONGO_URI=mongodb://mongo:27017/prholiday
       - REDIS_URL=redis://redis:6379/
-      - KAFKA_BROKERS=kafka:9092
+      # Make sure your server/.env has the MongoDB Atlas URI!
     depends_on:
-      - mongo
-      - redis
-      - kafka
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
 
-  # ── Databases & Messaging ─────────────────────────────────────────
-  mongo:
-    image: 'mongo:7'
-    restart: always
-    volumes:
-      - mongo_data:/data/db
-    # Note: Port 27017 is NOT exposed publicly for security. 
-    # It communicates with the app service safely inside the Docker network.
-
+  # ── Caching & Background Jobs ─────────────────────────────────────
   redis:
     image: 'redis:7-alpine'
-    restart: always
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    restart: always
-    environment: { ZOOKEEPER_CLIENT_PORT: 2181 }
-
-  kafka:
-    image: confluentinc/cp-kafka:7.5.0
-    depends_on: [zookeeper]
-    restart: always
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    ports: ['8080:8080']
-    restart: always
-    environment: { KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 }
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # ── Reverse Proxy (SSL & Domain Routing) ──────────────────────────
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
-    restart: always
+    restart: unless-stopped
     ports:
       - '80:80'    # Public HTTP
       - '81:81'    # Admin Web Interface
@@ -67,8 +56,16 @@ services:
     volumes:
       - npm_data:/data
       - npm_letsencrypt:/etc/letsencrypt
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
-  mongo_data:
   npm_data:
   npm_letsencrypt:

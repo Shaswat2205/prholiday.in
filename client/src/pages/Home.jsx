@@ -10,7 +10,7 @@ import SEO from '../components/common/SEO';
 
 const Home = () => {
     return (
-        <div className="min-h-screen bg-brand-white">
+        <div className="min-h-screen bg-transparent">
             <SEO
                 title="PRHolidays - Experience the World Like Never Before"
                 description="Book your next adventure with PRHolidays. Explore curated tour packages, breathtaking destinations, and premium travel experiences."

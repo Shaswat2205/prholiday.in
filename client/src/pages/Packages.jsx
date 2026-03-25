@@ -42,7 +42,7 @@ const Packages = () => {
     }
 
     return (
-        <div className="pt-28 min-h-screen bg-brand-light pb-20">
+        <div className="pt-28 min-h-screen bg-transparent pb-20">
             <SEO
                 title="Tour Packages - PRHolidays"
                 description="Browse our curated list of travel packages and find your next dream adventure."

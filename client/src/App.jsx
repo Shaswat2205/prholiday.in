@@ -19,6 +19,7 @@ import FAQ from './pages/FAQ';
 import PrivateRoute from './components/common/PrivateRoute';
 import AdminRoute from './components/common/AdminRoute';
 import WhatsAppButton from './components/common/WhatsAppButton';
+import BackgroundVideo from './components/layout/BackgroundVideo';
 
 import UserDashboard from './pages/user/Dashboard';
 import DashboardLayout from './components/admin/DashboardLayout';
@@ -40,7 +41,8 @@ const App = () => {
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={
-                    <div className="flex flex-col min-h-screen bg-brand-light">
+                    <div className="flex flex-col min-h-screen relative">
+                        <BackgroundVideo />
                         <Navbar />
                         <main className="flex-grow">
                             <Outlet />

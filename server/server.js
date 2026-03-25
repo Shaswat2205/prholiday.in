@@ -47,6 +47,7 @@ app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/contact', require('./routes/contact'));
+app.use('/api/local-videos', require('./routes/localVideos'));
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
@@ -71,12 +72,12 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Connect Kafka
+// Connect BullMQ
 const { connectProducer } = require('./events/producer');
 const { connectConsumer } = require('./events/consumer');
 
-// Initialize Kafka (Non-blocking)
-console.log('Initializing Kafka connections...');
+// Initialize BullMQ Workers (Non-blocking)
+console.log('Initializing BullMQ connections...');
 connectProducer();
 connectConsumer();
 

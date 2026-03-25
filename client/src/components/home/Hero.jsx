@@ -4,17 +4,6 @@ import { FaSearch } from 'react-icons/fa';
 
 const Hero = () => {
     const [activeTab, setActiveTab] = useState('tours');
-    const [videoIndex, setVideoIndex] = useState(0);
-
-    const videos = [
-        '/videos/beach.mp4',
-        '/videos/forest.mp4',
-        '/videos/mountain.mp4'
-    ];
-
-    const handleVideoEnd = () => {
-        setVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
-    };
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -37,22 +26,8 @@ const Hero = () => {
     };
 
     return (
-        <div className="relative h-[90vh] min-h-[700px] flex items-center justify-center overflow-hidden">
-            {/* Dynamic Video Background */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <video
-                    key={videos[videoIndex]}
-                    autoPlay
-                    muted
-                    onEnded={handleVideoEnd}
-                    className="absolute inset-0 w-full h-full object-cover animate-kenburns scale-110"
-                    style={{ filter: 'brightness(0.7)' }}
-                >
-                    <source src={videos[videoIndex]} type="video/mp4" />
-                </video>
-                <div className="absolute inset-0 bg-brand-secondary/40 backdrop-blur-[2px]"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-secondary/20 to-brand-secondary/60"></div>
-            </div>
+        <div className="relative h-[90vh] min-h-[700px] flex items-center justify-center overflow-hidden bg-transparent">
+            {/* Background handled by global BackgroundVideo component */}
 
             <motion.div
                 variants={containerVariants}

@@ -25,7 +25,7 @@ const Destinations = () => {
     }, []);
 
     return (
-        <div className="pt-28 min-h-screen bg-brand-light pb-20">
+        <div className="pt-28 min-h-screen bg-transparent pb-20">
             <SEO
                 title="Destinations - PRHolidays"
                 description="Explore breathtaking travel destinations curated just for you."
