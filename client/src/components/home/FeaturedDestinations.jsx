@@ -11,6 +11,12 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 const FeaturedDestinations = () => {
+    // Media path helper
+    const getImageUrl = (url) => {
+        if (!url) return 'https://images.unsplash.com/photo-1544735724-44c8517ad436?auto=format&fit=crop&q=80';
+        return url.replace('http://localhost:5000', '');
+    };
+
     const [destinations, setDestinations] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -88,7 +94,7 @@ const FeaturedDestinations = () => {
                                 className="relative h-[450px] rounded-3xl overflow-hidden group shadow-xl"
                             >
                                 <img
-                                    src={dest.image}
+                                    src={getImageUrl(dest.image)}
                                     alt={dest.name}
                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                     data-swiper-parallax="20%"

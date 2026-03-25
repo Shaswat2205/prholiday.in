@@ -11,6 +11,11 @@ const categories = [
 ];
 
 const CategoryCards = () => {
+    const getImageUrl = (url) => {
+        if (!url) return '';
+        return url.replace('http://localhost:5000', '');
+    };
+
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4">
@@ -49,7 +54,7 @@ const CategoryCards = () => {
                             >
                                 <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden mb-4 shadow-lg transition-all duration-500 group-hover:shadow-brand-primary/20 group-hover:scale-110">
                                     <img
-                                        src={category.image}
+                                        src={getImageUrl(category.image)}
                                         alt={category.name}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-125"
                                     />

@@ -5,6 +5,12 @@ import { FaStar, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 import axios from 'axios';
 
 const PopularToursGrid = () => {
+    // Media path helper
+    const getImageUrl = (url) => {
+        if (!url) return 'https://placehold.co/800x600';
+        return url.replace('http://localhost:5000', '');
+    };
+
     const [tours, setTours] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -71,7 +77,7 @@ const PopularToursGrid = () => {
                             {/* Image Container */}
                             <div className="relative h-64 overflow-hidden shrink-0">
                                 <img
-                                    src={tour.images && tour.images.length > 0 ? tour.images[0] : 'https://placehold.co/800x600'}
+                                    src={getImageUrl(tour.images && tour.images.length > 0 ? tour.images[0] : null)}
                                     alt={tour.name}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
