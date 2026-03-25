@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const { sendEvent } = require('../events/producer');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc    Register user
 // @route   POST /api/users/register
@@ -68,6 +69,100 @@ exports.login = async (req, res) => {
             success: false,
             message: err.message
         });
+    }
+};
+
+// @desc    Forgot Password
+// @route   POST /api/users/forgot-password
+// @access  Public
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            // Return success even if not found to prevent email enumeration
+            return res.status(200).json({ success: true, message: 'If an account exists, an OTP was sent.' });
+        }
+
+        // Generate 6 digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Expire in 10 minutes
+        user.resetPasswordOtp = otp;
+        user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save({ validateBeforeSave: false });
+
+        // Send Email
+        const message = `Your password reset OTP is: ${otp}. It is valid for 10 minutes.`;
+        const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #ed2124;">Password Reset Request</h2>
+                <p>Hello ${user.name},</p>
+                <p>We received a request to reset your password. Here is your One-Time Password (OTP):</p>
+                <div style="background-color: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+                    <h1 style="letter-spacing: 5px; color: #333; margin: 0;">${otp}</h1>
+                </div>
+                <p>This code will expire in exactly 10 minutes. If you did not request this, please ignore this email.</p>
+                <br />
+                <p>Thank you,</p>
+                <p><strong>The PRHolidays Team</strong></p>
+            </div>
+        `;
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'Password Reset OTP - PRHolidays',
+                message,
+                html
+            });
+
+            res.status(200).json({ success: true, message: 'OTP sent successfully.' });
+        } catch (err) {
+            user.resetPasswordOtp = undefined;
+            user.resetPasswordExpire = undefined;
+            await user.save({ validateBeforeSave: false });
+            return res.status(500).json({ success: false, message: 'Email could not be sent' });
+        }
+
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+};
+
+// @desc    Reset Password
+// @route   POST /api/users/reset-password
+// @access  Public
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+        
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ success: false, message: 'Please provide email, OTP, and new password' });
+        }
+
+        const user = await User.findOne({
+            email,
+            resetPasswordOtp: otp,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: 'Invalid or Expired OTP' });
+        }
+
+        // Set new password
+        user.password = newPassword;
+        user.resetPasswordOtp = undefined;
+        user.resetPasswordExpire = undefined;
+
+        await user.save();
+
+        // Issue new token so they can optionally log in immediately, or simply return success
+        res.status(200).json({ success: true, message: 'Password updated successfully' });
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
     }
 };
 

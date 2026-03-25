@@ -13,6 +13,7 @@ import About from './pages/About';
 import Testimonials from './pages/Testimonials';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import FAQ from './pages/FAQ';
@@ -63,6 +64,7 @@ const App = () => {
                     {/* Auth Routes */}
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
+                    <Route path="forgot-password" element={<ForgotPassword />} />
                     <Route path="privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="terms-of-service" element={<TermsOfService />} />
                     <Route path="faq" element={<FAQ />} />

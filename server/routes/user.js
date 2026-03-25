@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login, getMe, updateDetails, toggleLikedPackage, getLikedPackages, getUserBookings, uploadGalleryImage, getUsers, deleteUser } = require('../controllers/userController');
+const { register, login, getMe, updateDetails, toggleLikedPackage, getLikedPackages, getUserBookings, uploadGalleryImage, getUsers, deleteUser, forgotPassword, resetPassword } = require('../controllers/userController');
 const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -62,6 +62,8 @@ router.post('/register', register);
  *         description: Invalid credentials
  */
 router.post('/login', login);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 router.get('/me', protect, getMe);
 router.put('/updatedetails', protect, updateDetails);
 router.post('/liked/:id', protect, toggleLikedPackage);

@@ -64,7 +64,9 @@ const UserSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'Booking' // Assuming inquiries use same model but identified by status or similar
         }
-    ]
+    ],
+    resetPasswordOtp: String,
+    resetPasswordExpire: Date
 }, {
     timestamps: true
 });
