@@ -16,6 +16,9 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+    volumes:
+      - uploads_data:/app/server/uploads
+      - ./client/public/videos:/app/client/public/videos
     deploy:
       resources:
         limits:
@@ -69,3 +72,4 @@ services:
 volumes:
   npm_data:
   npm_letsencrypt:
+  uploads_data:

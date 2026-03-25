@@ -49,6 +49,10 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/local-videos', require('./routes/localVideos'));
 
+// Static folders
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/videos', express.static(path.join(__dirname, '../client/public/videos')));
+
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
