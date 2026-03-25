@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaClock, FaUser, FaStar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
+const PackageCard = ({ pkg }) => {
     // Logic to ensure images work in production/local
     const getImageUrl = (url) => {
         if (!url) return 'https://via.placeholder.com/400x300?text=Package';
