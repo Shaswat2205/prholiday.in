@@ -12,7 +12,7 @@ const Destinations = () => {
     useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations`);
+                const res = await axios.get(`/api/destinations`);
                 setDestinations(res.data.data);
             } catch (err) {
                 console.error('Error fetching destinations:', err);

@@ -13,7 +13,7 @@ const GalleryList = () => {
 
     const fetchGallery = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/gallery`);
+            const res = await axios.get(`/api/gallery`);
             setImages(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -31,7 +31,7 @@ const GalleryList = () => {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/gallery/${id}`, config);
+                await axios.delete(`/api/gallery/${id}`, config);
                 setImages(images.filter(img => img._id !== id));
             } catch (err) {
                 alert('Error deleting image');

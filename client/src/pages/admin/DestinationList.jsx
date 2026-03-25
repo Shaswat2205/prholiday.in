@@ -13,7 +13,7 @@ const DestinationList = () => {
 
     const fetchDestinations = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations`);
+            const res = await axios.get(`/api/destinations`);
             setDestinations(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -31,7 +31,7 @@ const DestinationList = () => {
                         Authorization: `Bearer ${token}`
                     }
                 };
-                await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations/${id}`, config);
+                await axios.delete(`/api/destinations/${id}`, config);
                 setDestinations(destinations.filter(d => d._id !== id));
             } catch (err) {
                 alert('Error deleting destination');

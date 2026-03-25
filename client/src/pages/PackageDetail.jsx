@@ -16,7 +16,7 @@ const PackageDetail = () => {
     useEffect(() => {
         const fetchPackage = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages/${id}`);
+                const res = await axios.get(`/api/packages/${id}`);
                 setPkg(res.data.data);
             } catch (err) {
                 console.error(err);

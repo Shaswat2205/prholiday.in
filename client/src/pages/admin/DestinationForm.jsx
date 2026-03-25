@@ -27,7 +27,7 @@ const DestinationForm = () => {
 
     const fetchDestination = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations/${id}`);
+            const res = await axios.get(`/api/destinations/${id}`);
             reset(res.data.data);
         } catch (err) {
             console.error(err);
@@ -46,10 +46,10 @@ const DestinationForm = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations/${id}`, data, config);
+                await axios.put(`/api/destinations/${id}`, data, config);
                 alert('Destination updated successfully');
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations`, data, config);
+                await axios.post(`/api/destinations`, data, config);
                 alert('Destination created successfully');
             }
             navigate('/admin/destinations');
@@ -70,13 +70,13 @@ const DestinationForm = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, formData, {
+            const res = await axios.post(`/api/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             });
-            setValue('image', `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${res.data.data}`);
+            setValue('image', `${res.data.data}`);
         } catch (err) {
             console.error(err);
             alert('Upload failed');

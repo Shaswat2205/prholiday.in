@@ -12,7 +12,7 @@ const MyBookings = () => {
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings/my`);
+                const res = await axios.get(`/api/bookings/my`);
                 setBookings(res.data.data);
             } catch (err) {
                 console.error('Error fetching bookings:', err);

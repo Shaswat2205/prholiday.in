@@ -11,7 +11,7 @@ const PopularToursGrid = () => {
     useEffect(() => {
         const fetchTours = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages`);
+                const res = await axios.get(`/api/packages`);
                 const packages = res.data.data || [];
                 // Get featured or top 6
                 const featured = packages.filter(p => p.featured);

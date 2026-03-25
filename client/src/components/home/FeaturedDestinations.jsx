@@ -17,7 +17,7 @@ const FeaturedDestinations = () => {
     useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations`);
+                const res = await axios.get(`/api/destinations`);
                 const apiDestinations = res.data.data || [];
                 // If there are featured destinations, show them, otherwise show top 6
                 const featured = apiDestinations.filter(d => d.featured);

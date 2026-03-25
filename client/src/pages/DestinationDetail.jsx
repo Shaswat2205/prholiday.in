@@ -16,11 +16,11 @@ const DestinationDetail = () => {
         const fetchDestinationData = async () => {
             try {
                 // Fetch destination details
-                const destRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/destinations/${id}`);
+                const destRes = await axios.get(`/api/destinations/${id}`);
                 setDestination(destRes.data.data);
 
                 // Fetch related packages
-                const pkgRes = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages?destination=${id}`);
+                const pkgRes = await axios.get(`/api/packages?destination=${id}`);
                 setPackages(pkgRes.data.data);
             } catch (err) {
                 console.error('Error fetching destination data:', err);

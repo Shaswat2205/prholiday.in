@@ -12,7 +12,7 @@ const Testimonials = () => {
         const fetchTestimonials = async () => {
             try {
                 // Fetch public testimonials
-                const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials`);
+                const res = await axios.get(`/api/testimonials`);
                 // Filter to show only approved ones if the endpoint returns all
                 const approved = res.data.data.filter(t => t.status === 'approved' && t.active);
                 setTestimonials(approved);

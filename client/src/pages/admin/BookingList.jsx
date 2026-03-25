@@ -17,7 +17,7 @@ const BookingList = () => {
                     Authorization: `Bearer ${token}`
                 }
             };
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, config);
+            const res = await axios.get(`/api/bookings`, config);
             setBookings(res.data.data);
             setLoading(false);
         } catch (err) {
@@ -34,7 +34,7 @@ const BookingList = () => {
                     Authorization: `Bearer ${token}`
                 }
             };
-            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings/${id}`, { status: newStatus }, config);
+            await axios.put(`/api/bookings/${id}`, { status: newStatus }, config);
 
             setBookings(bookings.map(booking =>
                 booking._id === id ? { ...booking, status: newStatus } : booking

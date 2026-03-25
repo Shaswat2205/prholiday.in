@@ -19,7 +19,7 @@ const GalleryForm = () => {
                 }
             };
 
-            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/gallery`, data, config);
+            await axios.post(`/api/gallery`, data, config);
             alert('Image added successfully');
             navigate('/admin/gallery');
         } catch (err) {
@@ -39,13 +39,13 @@ const GalleryForm = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, formData, {
+            const res = await axios.post(`/api/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             });
-            setValue('imageUrl', `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${res.data.data}`);
+            setValue('imageUrl', `${res.data.data}`);
         } catch (err) {
             console.error(err);
             alert('Upload failed');

@@ -40,7 +40,7 @@ const PackageForm = () => {
 
     const fetchPackage = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages/${id}`);
+            const res = await axios.get(`/api/packages/${id}`);
             const pkg = res.data.data;
             // Reset form with fetched data
             reset({
@@ -74,10 +74,10 @@ const PackageForm = () => {
             };
 
             if (isEditMode) {
-                await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages/${id}`, cleanData, config);
+                await axios.put(`/api/packages/${id}`, cleanData, config);
                 alert('Package updated successfully');
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/packages`, cleanData, config);
+                await axios.post(`/api/packages`, cleanData, config);
                 alert('Package created successfully');
             }
             navigate('/admin/packages');
@@ -99,7 +99,7 @@ const PackageForm = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/upload`, formData, {
+            const res = await axios.post(`/api/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
@@ -111,7 +111,7 @@ const PackageForm = () => {
             // or better yet, we can append to a hidden list.
             // Let's just append to our current images list in the form
             const currentImages = control._formValues.images || [];
-            setValue('images', [...currentImages, `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${res.data.data}`]);
+            setValue('images', [...currentImages, `${res.data.data}`]);
 
         } catch (err) {
             console.error(err);

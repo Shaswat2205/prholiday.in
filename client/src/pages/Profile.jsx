@@ -19,7 +19,7 @@ const Profile = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/testimonials`, {
+            await axios.post(`/api/testimonials`, {
                 ...testimonial,
                 name: user.name,
                 image: user.avatar

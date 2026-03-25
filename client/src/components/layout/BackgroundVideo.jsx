@@ -7,7 +7,7 @@ const BackgroundVideo = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [nextIndex, setNextIndex] = useState(null);
     const [loading, setLoading] = useState(true);
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const apiUrl = '';
 
     useEffect(() => {
         const fetchVideos = async () => {
