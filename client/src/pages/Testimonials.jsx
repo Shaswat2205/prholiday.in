@@ -95,6 +95,7 @@ const Testimonials = () => {
                                             <div className="w-full mb-6 relative z-10 overflow-hidden rounded-2xl border border-gray-100 min-h-[400px]">
                                                 <blockquote 
                                                     className="instagram-media" 
+                                                    data-instgrm-captioned
                                                     data-instgrm-permalink={cleanUrl}
                                                     data-instgrm-version="14"
                                                     style={{ background: '#FFF', border: '0', borderRadius: '12px', margin: '0', padding: '0', width: '100%', minWidth: '326px' }}
