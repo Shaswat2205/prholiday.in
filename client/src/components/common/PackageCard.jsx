@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import { FaClock, FaUser, FaStar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
-const PackageCard = ({ pkg }) => {
+    // Logic to ensure images work in production/local
+    const getImageUrl = (url) => {
+        if (!url) return 'https://via.placeholder.com/400x300?text=Package';
+        // Clear out any hardcoded localhost or absolute URLs from old DB entries
+        return url.replace('http://localhost:5000', '');
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -14,7 +20,7 @@ const PackageCard = ({ pkg }) => {
         >
             <div className="relative h-64 overflow-hidden">
                 <img
-                    src={pkg.images[0] || 'https://via.placeholder.com/400x300?text=Package'}
+                    src={getImageUrl(pkg.images[0])}
                     alt={pkg.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />

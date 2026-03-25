@@ -8,6 +8,12 @@ import BookingForm from '../components/packages/BookingForm';
 import ImageGallery from 'react-image-gallery';
 
 const PackageDetail = () => {
+    // Logic to ensure images work in production/local
+    const getImageUrl = (url) => {
+        if (!url) return 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80';
+        return url.replace('http://localhost:5000', '');
+    };
+
     const { id } = useParams();
     const [pkg, setPkg] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -42,9 +48,9 @@ const PackageDetail = () => {
             <SEO title={`${pkg.name} - PRHolidays`} description={pkg.description} />
 
             {/* Project Hero */}
-            <section className="relative h-[60vh] overflow-hidden">
-                <img src={pkg.images && pkg.images[0] ? pkg.images[0] : 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80'} className="w-full h-full object-cover" alt={pkg.name} />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary via-brand-secondary/40 to-transparent"></div>
+            <div className="relative h-[60vh]">
+                <img src={getImageUrl(pkg.images && pkg.images[0] ? pkg.images[0] : null)} className="w-full h-full object-cover" alt={pkg.name} />
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary via-brand-secondary/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 w-full p-12">
                     <div className="container mx-auto px-4">
                         <motion.div
@@ -71,7 +77,7 @@ const PackageDetail = () => {
                         </motion.div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <div className="container mx-auto px-4 -mt-10 relative z-20">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -175,8 +181,8 @@ const PackageDetail = () => {
                                 {activeTab === 'Gallery' && (
                                 <div className="grid grid-cols-2 gap-4">
                                     {pkg.images && pkg.images.map((img, i) => (
-                                        <div key={i} className="h-64 rounded-3xl overflow-hidden shadow-lg border-4 border-white">
-                                            <img src={img} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" alt="" />
+                                        <div key={i} className="relative h-64 rounded-3xl overflow-hidden group">
+                                            <img src={getImageUrl(img)} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" alt="" />
                                         </div>
                                     ))}
                                 </div>

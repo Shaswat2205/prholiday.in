@@ -17,7 +17,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - uploads_data:/app/server/uploads
+      - ./server/uploads:/app/server/uploads
       - ./client/public/videos:/app/client/public/videos
     deploy:
       resources:

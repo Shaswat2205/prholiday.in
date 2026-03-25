@@ -8,6 +8,11 @@ import axios from 'axios';
 
 const DestinationDetail = () => {
     const { id } = useParams();
+    // Logic for production image paths
+    const getImageUrl = (url) => {
+        if (!url) return 'https://images.unsplash.com/photo-1544735724-44c8517ad436?auto=format&fit=crop&q=80';
+        return url.replace('http://localhost:5000', '');
+    };
     const [destination, setDestination] = useState(null);
     const [packages, setPackages] = useState([]); // Packages in this destination
     const [loading, setLoading] = useState(true);
@@ -47,7 +52,7 @@ const DestinationDetail = () => {
             {/* Hero for Destination */}
             <section className="relative h-[65vh] flex items-center overflow-hidden">
                 <div className="absolute inset-0">
-                    <img src={destination.image} alt={destination.name} className="w-full h-full object-cover" />
+                    <img src={getImageUrl(destination.image)} alt={destination.name} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary via-brand-secondary/40 to-transparent"></div>
                 </div>
                 <div className="relative z-10 container mx-auto px-4 mt-20">

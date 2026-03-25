@@ -5,6 +5,12 @@ import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 import SEO from '../components/common/SEO';
 
 const Testimonials = () => {
+    // Media path helper
+    const getMediaUrl = (url) => {
+        if (!url) return '';
+        return url.replace('http://localhost:5000', '');
+    };
+
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -96,7 +102,7 @@ const Testimonials = () => {
                                     } else if (testimonial.image) {
                                         return (
                                             <div className="w-full rounded-xl overflow-hidden shadow-inner mb-6 relative z-10">
-                                                <img src={testimonial.image} alt="Travel Media" className="w-full h-auto object-cover hover:scale-105 transition-transform" />
+                                                <img src={getMediaUrl(testimonial.image)} alt="Travel Media" className="w-full h-auto object-cover hover:scale-105 transition-transform" />
                                             </div>
                                         );
                                     }
@@ -113,9 +119,9 @@ const Testimonials = () => {
                                                 </div>
                                             ) : (
                                                 <img 
-                                                    src={testimonial.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random`} 
-                                                    alt={testimonial.name} 
-                                                    className="w-full h-full object-cover"
+                                                    src={getMediaUrl(testimonial.image) || `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.name)}&background=random`} 
+                                                    className="w-full h-full object-cover" 
+                                                    alt={testimonial.name}
                                                 />
                                             );
                                         })()}
