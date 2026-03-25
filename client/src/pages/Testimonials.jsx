@@ -90,26 +90,31 @@ const Testimonials = () => {
                                 {(() => {
                                     const isInstaMedia = testimonial.image && (testimonial.image.includes('instagram.com/p/') || testimonial.image.includes('instagram.com/reel/'));
                                     if (isInstaMedia) {
-                                        // Ensure https and clean URL
-                                        let cleanUrl = testimonial.image.split('?')[0].replace('http://', 'https://');
-                                        if (!cleanUrl.endsWith('/')) cleanUrl += '/';
-                                        const embedUrl = `${cleanUrl}embed/`;
+                                        const cleanUrl = testimonial.image.split('?')[0].replace('http://', 'https://');
                                         return (
-                                            <div className="w-full rounded-xl overflow-hidden shadow-inner mb-6 relative z-10 bg-gray-50 aspect-[4/5] min-h-[350px]">
-                                                <iframe 
-                                                    src={embedUrl}
-                                                    className="w-full h-full border-none"
-                                                    frameBorder="0" 
-                                                    scrolling="no" 
-                                                    allowTransparency="true"
-                                                    allowFullScreen="true"
-                                                    title={`Instagram by ${testimonial.name}`}
-                                                ></iframe>
-                                                <div className="absolute bottom-4 left-0 right-0 text-center">
-                                                    <a href={cleanUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-brand-primary font-bold hover:underline">
-                                                        View on Instagram
-                                                    </a>
-                                                </div>
+                                            <div className="w-full mb-6 relative z-10 overflow-hidden rounded-2xl border border-gray-100 min-h-[400px]">
+                                                <blockquote 
+                                                    className="instagram-media" 
+                                                    data-instgrm-permalink={cleanUrl}
+                                                    data-instgrm-version="14"
+                                                    style={{ background: '#FFF', border: '0', borderRadius: '12px', margin: '0', padding: '0', width: '100%', minWidth: '326px' }}
+                                                >
+                                                    <div style={{ padding: '16px' }}>
+                                                        <a href={cleanUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                <div style={{ background: '#F4F4F4', borderRadius: '50%', height: '40px', width: '40px', marginRight: '14px' }}></div>
+                                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                                    <div style={{ background: '#F4F4F4', borderRadius: '4px', height: '14px', width: '100px', marginBottom: '6px' }}></div>
+                                                                    <div style={{ background: '#F4F4F4', borderRadius: '4px', height: '14px', width: '60px' }}></div>
+                                                                </div>
+                                                            </div>
+                                                            <div style={{ padding: '19% 0' }}></div>
+                                                            <div style={{ textAlign: 'center', color: '#3897f0', fontFamily: 'Arial,sans-serif', fontSize: '14px', fontWeight: '600' }}>
+                                                                View on Instagram
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </blockquote>
                                             </div>
                                         );
                                     } else if (testimonial.image) {
