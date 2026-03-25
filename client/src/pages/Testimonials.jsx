@@ -19,11 +19,16 @@ const Testimonials = () => {
             try {
                 // Fetch public testimonials
                 const res = await axios.get(`/api/testimonials`);
-                // Filter to show only approved ones if the endpoint returns all
-                const approved = res.data.data.filter(t => t.status === 'approved' && t.active);
-                setTestimonials(approved);
+                setTestimonials(res.data.data);
+                
+                // Process Instagram embeds after data is loaded
+                setTimeout(() => {
+                    if (window.instgrm) {
+                        window.instgrm.Embeds.process();
+                    }
+                }, 1000);
             } catch (err) {
-                console.error('Error fetching testimonials:', err);
+                console.error(err);
             } finally {
                 setLoading(false);
             }
@@ -88,7 +93,7 @@ const Testimonials = () => {
                                         // Ensure https and clean URL
                                         let cleanUrl = testimonial.image.split('?')[0].replace('http://', 'https://');
                                         if (!cleanUrl.endsWith('/')) cleanUrl += '/';
-                                        const embedUrl = `${cleanUrl}embed`;
+                                        const embedUrl = `${cleanUrl}embed/`;
                                         return (
                                             <div className="w-full rounded-xl overflow-hidden shadow-inner mb-6 relative z-10 bg-gray-50 aspect-[4/5] min-h-[350px]">
                                                 <iframe 
@@ -100,6 +105,11 @@ const Testimonials = () => {
                                                     allowFullScreen="true"
                                                     title={`Instagram by ${testimonial.name}`}
                                                 ></iframe>
+                                                <div className="absolute bottom-4 left-0 right-0 text-center">
+                                                    <a href={cleanUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] text-brand-primary font-bold hover:underline">
+                                                        View on Instagram
+                                                    </a>
+                                                </div>
                                             </div>
                                         );
                                     } else if (testimonial.image) {
