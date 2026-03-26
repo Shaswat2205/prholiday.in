@@ -4,9 +4,13 @@ const {
     getPackage,
     createPackage,
     updatePackage,
-    deletePackage
+    deletePackage,
+    extractPackageData
 } = require('../controllers/packageController');
 const { protect, authorize } = require('../middleware/auth');
+const multer = require('multer');
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -45,6 +49,7 @@ router.get('/', getPackages);
 router.get('/:id', getPackage);
 
 // Protected routes (Admin)
+router.post('/extract-from-document', protect, authorize('admin'), upload.single('document'), extractPackageData);
 router.post('/', protect, authorize('admin'), createPackage);
 router.put('/:id', protect, authorize('admin'), updatePackage);
 router.delete('/:id', protect, authorize('admin'), deletePackage);

@@ -1,4 +1,7 @@
 const Package = require('../models/Package');
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // @desc    Get all packages
 // @route   GET /api/packages
@@ -82,5 +85,86 @@ exports.deletePackage = async (req, res) => {
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// @desc    Extract package data from PDF/DOCX using AI
+// @route   POST /api/packages/extract-from-document
+// @access  Private (Admin)
+exports.extractPackageData = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Please upload a document file.' });
+        }
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ success: false, message: 'GEMINI_API_KEY is not configured on the server.' });
+        }
+
+        let extractedText = '';
+
+        // Safely parse the buffer based on MimeType
+        if (req.file.mimetype === 'application/pdf') {
+            const pdfData = await pdfParse(req.file.buffer);
+            extractedText = pdfData.text;
+        } else if (
+            req.file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+            req.file.mimetype === 'application/msword'
+        ) {
+            const docData = await mammoth.extractRawText({ buffer: req.file.buffer });
+            extractedText = docData.value;
+        } else {
+            return res.status(400).json({ success: false, message: 'Unsupported file type. Please upload a PDF or DOCX.' });
+        }
+
+        if (!extractedText || extractedText.trim().length === 0) {
+            return res.status(400).json({ success: false, message: 'Could not extract text from document.' });
+        }
+
+        // Send to Gemini
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+        const prompt = `
+You are an expert travel package structured data parser. Below is the raw text extracted from a travel package brochure or itinerary document.
+Extract the details into a strict JSON payload that exactly matches the following schema structure. If any field is totally missing, guess a reasonable default or leave it empty, but DO NOT drop keys.
+Important rules:
+- maxPax: should be an integer (guess 2 or 4 if not specified).
+- duration.days and duration.nights: must be integers.
+- price: must be an integer number (strip currency symbols).
+- category: must be purely one of ['Spiritual', 'Adventure', 'Nature', 'Heritage', 'Beach', 'Solo Trip', 'Family', 'Luxury', 'Honeymoon', 'Wildlife', 'Cultural'].
+- itinerary, inclusions, exclusions: must be arrays of STRINGS. (For itinerary, write \"Day 1: ...\", \"Day 2:...\" directly as strings).
+
+JSON Schema:
+{
+    "name": "String",
+    "description": "String",
+    "maxPax": Number,
+    "price": Number,
+    "duration": { "days": Number, "nights": Number },
+    "category": "String",
+    "itinerary": ["String", "String"],
+    "inclusions": ["String", "String"],
+    "exclusions": ["String", "String"]
+}
+
+Return ONLY raw generic valid JSON. Do not include markdown \`\`\`json wrappers.
+
+Document Text:
+${extractedText}
+`;
+        const result = await model.generateContent(prompt);
+        let rawResponse = result.response.text().trim();
+        
+        if (rawResponse.startsWith('\`\`\`json')) {
+            rawResponse = rawResponse.replace(/^\`\`\`json/i, '').replace(/\`\`\`$/i, '').trim();
+        }
+
+        const parsedJson = JSON.parse(rawResponse);
+        res.status(200).json({ success: true, data: parsedJson });
+        
+    } catch (err) {
+        console.error('Extraction Error:', err);
+        res.status(500).json({ success: false, message: 'Failed to process document with AI: ' + err.message });
     }
 };
