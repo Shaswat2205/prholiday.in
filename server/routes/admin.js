@@ -1,5 +1,5 @@
 const express = require('express');
-const { loginAdmin, getMe } = require('../controllers/adminController');
+const { loginAdmin, getMe, getDashboardStats } = require('../controllers/adminController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -43,5 +43,6 @@ router.post('/login', loginAdmin);
  *         description: Admin details retrieved successfully
  */
 router.get('/me', protect, getMe);
+router.get('/stats', protect, getDashboardStats);
 
 module.exports = router;

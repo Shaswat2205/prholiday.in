@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaCheck, FaTimes, FaTrash, FaStar } from 'react-icons/fa';
 import axios from 'axios';
 
 const TestimonialList = () => {
@@ -54,78 +54,92 @@ const TestimonialList = () => {
         }
     };
 
-    if (loading) return <div className="text-white">Loading...</div>;
+    if (loading) return <div className="text-gray-500 font-bold animate-pulse">Loading testimonials...</div>;
+
+    const getStatusStyle = (status) => {
+        if (status === 'approved') return 'bg-green-100 text-green-600';
+        if (status === 'rejected') return 'bg-red-100 text-red-600';
+        return 'bg-yellow-100 text-yellow-600'; // Pending
+    };
 
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-white">Manage Testimonials</h1>
+        <div className="max-w-7xl mx-auto pb-10">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <h1 className="text-3xl lg:text-4xl font-black text-brand-secondary">Manage Testimonials</h1>
                 <Link
                     to="/admin/testimonials/new"
-                    className="bg-secondary-cyan text-black px-4 py-2 rounded flex items-center font-bold hover:bg-opacity-80 transition-colors"
+                    className="bg-brand-primary text-white px-6 py-3 rounded-full flex items-center shadow-md shadow-brand-primary/30 font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto justify-center"
                 >
-                    <FaPlus className="mr-2" /> Add New
+                    <FaPlus className="mr-2" /> Add Testimonial
                 </Link>
             </div>
 
-            <div className="bg-gray-800 rounded-xl overflow-hidden shadow-xl border border-gray-700">
-                <table className="w-full text-left text-gray-300">
-                    <thead className="bg-gray-700 text-gray-100 uppercase text-xs">
-                        <tr>
-                            <th className="px-6 py-4">User</th>
-                            <th className="px-6 py-4">Rating</th>
-                            <th className="px-6 py-4">Quote</th>
-                            <th className="px-6 py-4">Status</th>
-                            <th className="px-6 py-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-700">
-                        {testimonials.map(item => (
-                            <tr key={item._id} className="hover:bg-gray-750">
-                                <td className="px-6 py-4 flex items-center">
-                                    <img
-                                        src={item.image || 'https://via.placeholder.com/40'}
-                                        alt={item.name}
-                                        className="w-10 h-10 rounded-full object-cover mr-3"
-                                    />
-                                    <div>
-                                        <div className="font-bold text-white">{item.name}</div>
-                                        <div className="text-xs text-gray-500">{item.role || 'Client'}</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4 text-secondary-gold font-bold">{item.rating}/5</td>
-                                <td className="px-6 py-4 italic truncate max-w-xs">{item.review || item.comment || item.text}</td>
-                                <td className="px-6 py-4 font-bold">
-                                    <span className={item.status === 'approved' ? 'text-green-500' : item.status === 'rejected' ? 'text-red-500' : 'text-yellow-500'}>
-                                        {item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Pending'}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 space-x-3 text-sm">
-                                    {item.status !== 'approved' && (
-                                        <button onClick={() => handleStatusUpdate(item._id, 'approved')} className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-500">
-                                            Approve
-                                        </button>
-                                    )}
-                                    {item.status !== 'rejected' && (
-                                        <button onClick={() => handleStatusUpdate(item._id, 'rejected')} className="bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-500">
-                                            Reject
-                                        </button>
-                                    )}
-                                    <button onClick={() => handleDelete(item._id)} className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-500">
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        {testimonials.length === 0 && (
+            <div className="bg-white rounded-[2rem] overflow-hidden shadow-xl shadow-gray-200/40 border border-gray-50">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left text-gray-600">
+                        <thead className="bg-gray-50 text-gray-500 uppercase text-xs font-bold tracking-wider">
                             <tr>
-                                <td colSpan="4" className="text-center py-8 text-gray-500">
-                                    No testimonials found.
-                                </td>
+                                <th className="px-6 py-5">User</th>
+                                <th className="px-6 py-5">Rating</th>
+                                <th className="px-6 py-5">Quote</th>
+                                <th className="px-6 py-5">Status</th>
+                                <th className="px-6 py-5">Actions</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {testimonials.map(item => (
+                                <tr key={item._id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-6 py-4 flex items-center">
+                                        <img
+                                            src={item.image || 'https://via.placeholder.com/40'}
+                                            alt={item.name}
+                                            className="w-12 h-12 rounded-full object-cover mr-4 shadow-sm"
+                                        />
+                                        <div>
+                                            <div className="font-bold text-brand-secondary">{item.name}</div>
+                                            <div className="text-xs font-medium text-gray-400 uppercase tracking-wide">{item.role || 'Client'}</div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-1 text-secondary-gold bg-yellow-50 px-3 py-1.5 rounded-full w-max text-sm font-black shadow-sm border border-yellow-100">
+                                            <FaStar /> {item.rating}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="italic text-gray-500 truncate max-w-[200px] lg:max-w-xs text-sm font-medium">"{item.review || item.comment || item.text}"</div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${getStatusStyle(item.status)}`}>
+                                            {item.status ? item.status : 'Pending'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 space-x-2 text-sm whitespace-nowrap">
+                                        {item.status !== 'approved' && (
+                                            <button onClick={() => handleStatusUpdate(item._id, 'approved')} className="p-2 text-green-600 bg-green-50 hover:bg-green-100 rounded-xl inline-flex transition-colors" title="Approve">
+                                                <FaCheck size={16} />
+                                            </button>
+                                        )}
+                                        {item.status !== 'rejected' && (
+                                            <button onClick={() => handleStatusUpdate(item._id, 'rejected')} className="p-2 text-yellow-600 bg-yellow-50 hover:bg-yellow-100 rounded-xl inline-flex transition-colors" title="Reject">
+                                                <FaTimes size={16} />
+                                            </button>
+                                        )}
+                                        <button onClick={() => handleDelete(item._id)} className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl inline-flex transition-colors" title="Delete">
+                                            <FaTrash size={16} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {testimonials.length === 0 && (
+                                <tr>
+                                    <td colSpan="5" className="text-center py-12 text-gray-400 font-medium tracking-wide">
+                                        No testimonials found.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

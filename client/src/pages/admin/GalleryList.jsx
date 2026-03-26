@@ -40,43 +40,47 @@ const GalleryList = () => {
         }
     };
 
-    if (loading) return <div className="text-white">Loading...</div>;
+    if (loading) return <div className="text-gray-500 font-bold animate-pulse">Loading gallery...</div>;
 
     return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-white">Manage Gallery</h1>
+        <div className="max-w-7xl mx-auto pb-10">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <h1 className="text-3xl lg:text-4xl font-black text-brand-secondary">Manage Gallery</h1>
                 <Link
                     to="/admin/gallery/new"
-                    className="bg-secondary-cyan text-black px-4 py-2 rounded flex items-center font-bold hover:bg-opacity-80 transition-colors"
+                    className="bg-brand-primary text-white px-6 py-3 rounded-full flex items-center shadow-md shadow-brand-primary/30 font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto justify-center"
                 >
-                    <FaPlus className="mr-2" /> Add New
+                    <FaPlus className="mr-2" /> Add Image
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {images.map(img => (
-                    <div key={img._id} className="relative group bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-700">
+                    <div key={img._id} className="relative group bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/40 border border-gray-100 hover:-translate-y-1 transition-all">
                         <img
                             src={img.imageUrl}
                             alt={img.description}
-                            className="w-full h-48 object-cover"
+                            className="w-full h-56 object-cover"
                         />
-                        <div className="p-4">
-                            <p className="text-gray-300 text-sm truncate">{img.description || 'No description'}</p>
+                        <div className="p-5 bg-white">
+                            <p className="text-gray-500 font-medium text-sm truncate">{img.description || 'No description provided'}</p>
                         </div>
                         <button
                             onClick={() => handleDelete(img._id)}
-                            className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            className="absolute top-3 right-3 bg-white text-red-500 p-2.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 scale-90 group-hover:scale-100"
+                            title="Delete Image"
                         >
-                            <FaTrash />
+                            <FaTrash size={14} />
                         </button>
                     </div>
                 ))}
             </div>
 
             {images.length === 0 && (
-                <div className="text-center text-gray-500 mt-12">No images found.</div>
+                <div className="text-center py-20 bg-white rounded-[2rem] shadow-xl shadow-gray-200/40 border border-gray-50 mt-4">
+                    <div className="text-gray-400 font-medium tracking-wide">No images found in gallery.</div>
+                    <Link to="/admin/gallery/new" className="text-brand-primary font-bold hover:underline mt-2 inline-block">Upload your first image</Link>
+                </div>
             )}
         </div>
     );

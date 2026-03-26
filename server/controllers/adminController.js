@@ -1,4 +1,9 @@
 const Admin = require('../models/Admin');
+const Package = require('../models/Package');
+const Destination = require('../models/Destination');
+const Testimonial = require('../models/Testimonial');
+const User = require('../models/User');
+const Booking = require('../models/Booking');
 
 // @desc    Login admin
 // @route   POST /api/admin/login
@@ -62,4 +67,40 @@ const sendTokenResponse = (admin, statusCode, res) => {
             success: true,
             token
         });
+};
+
+// @desc    Get dashboard statistics
+// @route   GET /api/admin/stats
+// @access  Private
+exports.getDashboardStats = async (req, res) => {
+    try {
+        const [packages, destinations, testimonials, users, bookings] = await Promise.all([
+            Package.countDocuments(),
+            Destination.countDocuments(),
+            Testimonial.countDocuments(),
+            User.countDocuments(),
+            Booking.countDocuments(),
+        ]);
+
+        const recentActivity = await Booking.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .populate('user', 'name email')
+            .populate('packageId', 'title');
+
+        res.status(200).json({
+            success: true,
+            data: {
+                packages,
+                destinations,
+                testimonials,
+                users,
+                bookings,
+                recentActivity,
+            }
+        });
+    } catch (err) {
+        console.error("Stats Error:", err);
+        res.status(500).json({ success: false, message: 'Failed to fetch dashboard statistics' });
+    }
 };
