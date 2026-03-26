@@ -194,13 +194,14 @@ const Navbar = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: navLinks.length * 0.1 }}
+                                        className="mt-8"
                                     >
                                         <Link
                                             to={user?.role === 'admin' ? '/admin' : '/dashboard'}
                                             onClick={() => setIsOpen(false)}
-                                            className="text-2xl font-bold text-brand-secondary hover:text-brand-primary transition-colors flex items-center gap-3"
+                                            className="btn-primary w-full flex justify-center items-center gap-2"
                                         >
-                                            <FaUserAlt className="text-xl" /> {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
+                                            <FaUserAlt className="text-lg" /> {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
                                         </Link>
                                     </motion.div>
                                     <motion.button
@@ -208,9 +209,9 @@ const Navbar = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: (navLinks.length + 1) * 0.1 }}
                                         onClick={handleLogout}
-                                        className="text-2xl font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-3 text-left w-full"
+                                        className="w-full mt-4 py-3 rounded-lg border border-red-100 text-red-500 font-bold hover:bg-red-50 transition-colors flex justify-center items-center gap-2"
                                     >
-                                        <FaSignOutAlt className="text-xl" /> Logout
+                                        <FaSignOutAlt className="text-lg" /> Logout
                                     </motion.button>
                                 </>
                             ) : (
@@ -218,24 +219,17 @@ const Navbar = () => {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: navLinks.length * 0.1 }}
+                                    className="mt-8"
                                 >
                                     <Link
                                         to="/login"
                                         onClick={() => setIsOpen(false)}
-                                        className="text-2xl font-bold text-brand-secondary hover:text-brand-primary transition-colors block"
+                                        className="btn-primary w-full flex justify-center items-center"
                                     >
                                         Login
                                     </Link>
                                 </motion.div>
                             )}
-                            <motion.button
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: (navLinks.length + 2) * 0.1 }}
-                                className="btn-primary mt-8 w-full"
-                            >
-                                Plan My Trip
-                            </motion.button>
                         </div>
                     </motion.div>
                 )}

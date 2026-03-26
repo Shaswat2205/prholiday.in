@@ -36,9 +36,12 @@ import TestimonialForm from './pages/admin/TestimonialForm';
 import BookingList from './pages/admin/BookingList';
 import UserList from './pages/admin/UserList';
 
+import ScrollToTop from './components/common/ScrollToTop';
+
 const App = () => {
     return (
         <Router>
+            <ScrollToTop />
             <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={
