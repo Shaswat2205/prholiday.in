@@ -26,7 +26,7 @@ const Hero = () => {
     };
 
     return (
-        <div className="relative h-[90vh] min-h-[700px] flex items-center justify-center overflow-hidden bg-transparent">
+        <div className="relative min-h-[100svh] lg:h-[90vh] lg:min-h-[700px] flex items-center justify-center overflow-hidden bg-transparent py-24 lg:py-0">
             {/* Background handled by global BackgroundVideo component */}
 
             <motion.div

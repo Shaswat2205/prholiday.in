@@ -181,17 +181,58 @@ const Navbar = () => {
                                 >
                                     <Link
                                         to={link.path}
+                                        onClick={() => setIsOpen(false)}
                                         className="text-2xl font-bold text-brand-secondary hover:text-brand-primary transition-colors"
                                     >
                                         {link.name}
                                     </Link>
                                 </motion.div>
                             ))}
+                            {user ? (
+                                <>
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: navLinks.length * 0.1 }}
+                                    >
+                                        <Link
+                                            to={user?.role === 'admin' ? '/admin' : '/dashboard'}
+                                            onClick={() => setIsOpen(false)}
+                                            className="text-2xl font-bold text-brand-secondary hover:text-brand-primary transition-colors flex items-center gap-3"
+                                        >
+                                            <FaUserAlt className="text-xl" /> {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
+                                        </Link>
+                                    </motion.div>
+                                    <motion.button
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: (navLinks.length + 1) * 0.1 }}
+                                        onClick={handleLogout}
+                                        className="text-2xl font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-3 text-left w-full"
+                                    >
+                                        <FaSignOutAlt className="text-xl" /> Logout
+                                    </motion.button>
+                                </>
+                            ) : (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: navLinks.length * 0.1 }}
+                                >
+                                    <Link
+                                        to="/login"
+                                        onClick={() => setIsOpen(false)}
+                                        className="text-2xl font-bold text-brand-secondary hover:text-brand-primary transition-colors block"
+                                    >
+                                        Login
+                                    </Link>
+                                </motion.div>
+                            )}
                             <motion.button
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
-                                className="btn-primary mt-8"
+                                transition={{ delay: (navLinks.length + 2) * 0.1 }}
+                                className="btn-primary mt-8 w-full"
                             >
                                 Plan My Trip
                             </motion.button>
