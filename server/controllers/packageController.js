@@ -1,5 +1,5 @@
 const Package = require('../models/Package');
-const pdfParse = require('pdf-parse');
+const { PDFParse } = require('pdf-parse');
 const mammoth = require('mammoth');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -105,8 +105,10 @@ exports.extractPackageData = async (req, res) => {
 
         // Safely parse the buffer based on MimeType
         if (req.file.mimetype === 'application/pdf') {
-            const pdfData = await pdfParse(req.file.buffer);
+            const parser = new PDFParse({ data: req.file.buffer });
+            const pdfData = await parser.getText();
             extractedText = pdfData.text;
+            await parser.destroy();
         } else if (
             req.file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
             req.file.mimetype === 'application/msword'

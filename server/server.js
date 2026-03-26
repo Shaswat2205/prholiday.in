@@ -57,6 +57,7 @@ app.use('/api/testimonials', require('./routes/testimonials'));
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/media', require('./routes/media'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/local-videos', require('./routes/localVideos'));
 

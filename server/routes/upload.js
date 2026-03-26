@@ -1,52 +1,61 @@
 const express = require('express');
 const upload = require('../middleware/upload');
 const { protect } = require('../middleware/auth');
+const Media = require('../models/Media');
 const router = express.Router();
 
 // @desc    Upload file
 // @route   POST /api/upload
 // @access  Private (Admin)
-/**
- * @swagger
- * /api/upload:
- *   post:
- *     summary: Upload a file (Admin)
- *     tags: [Upload]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               file:
- *                 type: string
- *                 format: binary
- *     responses:
- *       200:
- *         description: File uploaded successfully
- */
-router.post('/', protect, upload.single('file'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ success: false, message: 'No file uploaded' });
+router.post('/', protect, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
+        
+        // Save to MongoDB Buffer
+        const media = await Media.create({
+            filename: req.file.originalname,
+            contentType: req.file.mimetype,
+            data: req.file.buffer,
+            size: req.file.size
+        });
+
+        res.json({
+            success: true,
+            data: `/api/media/${media._id}`
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error during upload' });
     }
-    res.json({
-        success: true,
-        data: `/uploads/${req.file.filename}`
-    });
 });
 
 // Multi-file upload if needed
-router.post('/multiple', protect, upload.array('files', 10), (req, res) => {
-    if (!req.files || req.files.length === 0) {
-        return res.status(400).json({ success: false, message: 'No files uploaded' });
+router.post('/multiple', protect, upload.array('files', 10), async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ success: false, message: 'No files uploaded' });
+        }
+        
+        const mediaDocs = req.files.map(file => ({
+            filename: file.originalname,
+            contentType: file.mimetype,
+            data: file.buffer,
+            size: file.size
+        }));
+
+        const inserted = await Media.insertMany(mediaDocs);
+        const paths = inserted.map(doc => `/api/media/${doc._id}`);
+
+        res.json({
+            success: true,
+            data: paths
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server Error during uploads' });
     }
-    const paths = req.files.map(file => `/uploads/${file.filename}`);
-    res.json({
-        success: true,
-        data: paths
-    });
 });
 
 module.exports = router;
