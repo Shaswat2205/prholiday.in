@@ -96,6 +96,23 @@
     transform: scale(1.1) !important;
 }
 
+@media (max-width: 768px) {
+    .destination-swiper .swiper-button-next,
+    .destination-swiper .swiper-button-prev {
+        background: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        width: 40px !important;
+        height: 40px !important;
+        color: white !important;
+    }
+    
+    .destination-swiper .swiper-button-next:after,
+    .destination-swiper .swiper-button-prev:after {
+        font-size: 16px !important;
+    }
+}
+
 .destination-swiper .swiper-pagination-bullet-active {
     background: #FF6B35 !important;
 }
