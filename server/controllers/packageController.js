@@ -123,12 +123,15 @@ exports.extractPackageData = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Could not extract text from document.' });
         }
 
-        // Send to Gemini with fallback to more stable model names
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        
-        const modelsToTry = ['gemini-1.5-flash', 'gemini-pro', 'gemini-1.5-pro', 'gemini-1.0-pro'];
-        let result;
-        let lastError;
+        // Send to OpenAI (ChatGPT)
+        const OpenAI = require('openai');
+        if (!process.env.OPENAI_API_KEY) {
+            return res.status(500).json({ success: false, message: 'OPENAI_API_KEY is not configured on the server.' });
+        }
+
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
 
         const prompt = `
 You are an expert travel package structured data parser. Below is the raw text extracted from a travel package brochure or itinerary document.
@@ -138,7 +141,7 @@ Important rules:
 - duration.days and duration.nights: must be integers.
 - price: must be an integer number (strip currency symbols).
 - category: must be purely one of ['Spiritual', 'Adventure', 'Nature', 'Heritage', 'Beach', 'Solo Trip', 'Family', 'Luxury', 'Honeymoon', 'Wildlife', 'Cultural'].
-- itinerary, inclusions, exclusions: must be arrays of STRINGS. (For itinerary, write \"Day 1: ...\", \"Day 2:...\" directly as strings).
+- itinerary, inclusions, exclusions: must be arrays of STRINGS. (For itinerary, write "Day 1: ...", "Day 2:..." directly as strings).
 
 JSON Schema:
 {
@@ -153,36 +156,22 @@ JSON Schema:
     "exclusions": ["String", "String"]
 }
 
-Return ONLY raw generic valid JSON. Do not include markdown \`\`\`json wrappers.
+Return ONLY raw generic valid JSON.
 
 Document Text:
 ${extractedText}
 `;
 
-        for (const modelId of modelsToTry) {
-            try {
-                console.log(`Trying Gemini model: ${modelId}`);
-                const model = genAI.getGenerativeModel({ model: modelId });
-                result = await model.generateContent(prompt);
-                if (result) break;
-            } catch (e) {
-                lastError = e;
-                console.warn(`Model ${modelId} failed: ${e.message}`);
-                continue;
-            }
-        }
+        const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                { role: "system", content: "You are a travel data parser. Output ONLY raw JSON." },
+                { role: "user", content: prompt }
+            ],
+            response_format: { type: "json_object" }
+        });
 
-        if (!result) {
-            throw new Error('All Gemini models failed. Last error: ' + lastError.message);
-        }
-
-        let rawResponse = result.response.text().trim();
-        
-        if (rawResponse.startsWith('\`\`\`json')) {
-            rawResponse = rawResponse.replace(/^\`\`\`json/i, '').replace(/\`\`\`$/i, '').trim();
-        }
-
-        const parsedJson = JSON.parse(rawResponse);
+        const parsedJson = JSON.parse(response.choices[0].message.content);
         res.status(200).json({ success: true, data: parsedJson });
         
     } catch (err) {
