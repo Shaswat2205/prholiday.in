@@ -123,16 +123,44 @@ exports.extractPackageData = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Could not extract text from document.' });
         }
 
-        // Send to OpenAI (ChatGPT)
-        const OpenAI = require('openai');
-        if (!process.env.OPENAI_API_KEY) {
-            return res.status(500).json({ success: false, message: 'OPENAI_API_KEY is not configured on the server.' });
+        // Send to Gemini (Free)
+        const { GoogleGenerativeAI } = require('@google/generative-ai');
+        
+        // --- FAIL-SAFE KEY LOADER ---
+        let apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            console.warn('GEMINI_API_KEY not in process.env, attempting manual load from .env file...');
+            try {
+                const fs = require('fs');
+                const path = require('path');
+                const dotenv = require('dotenv');
+                // Try multiple paths
+                const paths = [
+                    path.join(__dirname, '../.env'),
+                    path.join(process.cwd(), '.env'),
+                    path.join(process.cwd(), 'server/.env')
+                ];
+                for (const p of paths) {
+                    if (fs.existsSync(p)) {
+                        const envConfig = dotenv.parse(fs.readFileSync(p));
+                        if (envConfig.GEMINI_API_KEY) {
+                            apiKey = envConfig.GEMINI_API_KEY;
+                            console.log(`Success: Found GEMINI_API_KEY in ${p}`);
+                            break;
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Fail-safe loader error:', err.message);
+            }
         }
 
-        const openai = new OpenAI({
-            apiKey: process.env.OPENAI_API_KEY,
-        });
+        if (!apiKey) {
+            return res.status(500).json({ success: false, message: 'GEMINI_API_KEY is not configured on the server (Environment or .env).' });
+        }
 
+        const genAI = new GoogleGenerativeAI(apiKey);
+        
         const prompt = `
 You are an expert travel package structured data parser. Below is the raw text extracted from a travel package brochure or itinerary document.
 Extract the details into a strict JSON payload that exactly matches the following schema structure. If any field is totally missing, guess a reasonable default or leave it empty, but DO NOT drop keys.
@@ -162,16 +190,34 @@ Document Text:
 ${extractedText}
 `;
 
-        const response = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                { role: "system", content: "You are a travel data parser. Output ONLY raw JSON." },
-                { role: "user", content: prompt }
-            ],
-            response_format: { type: "json_object" }
-        });
+        const modelsToTry = ['gemini-1.5-flash', 'gemini-pro', 'gemini-1.5-pro', 'gemini-1.0-pro'];
+        let result;
+        let lastError;
 
-        const parsedJson = JSON.parse(response.choices[0].message.content);
+        for (const modelId of modelsToTry) {
+            try {
+                console.log(`Trying Gemini model: ${modelId}`);
+                const model = genAI.getGenerativeModel({ model: modelId });
+                result = await model.generateContent(prompt);
+                if (result) break;
+            } catch (e) {
+                lastError = e;
+                console.warn(`Model ${modelId} failed: ${e.message}`);
+                continue;
+            }
+        }
+
+        if (!result) {
+            throw new Error('All Gemini models failed. Last error: ' + lastError.message);
+        }
+
+        let rawResponse = result.response.text().trim();
+        
+        if (rawResponse.startsWith('\`\`\`json')) {
+            rawResponse = rawResponse.replace(/^\`\`\`json/i, '').replace(/\`\`\`$/i, '').trim();
+        }
+
+        const parsedJson = JSON.parse(rawResponse);
         res.status(200).json({ success: true, data: parsedJson });
         
     } catch (err) {
