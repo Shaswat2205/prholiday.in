@@ -1,36 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
+import axios from 'axios';
 
-const images = [
-    {
-        original: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2070&auto=format&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=150&auto=format&fit=crop',
-        description: 'Beautiful Landscape'
-    },
-    {
-        original: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=2073&auto=format&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=150&auto=format&fit=crop',
-        description: 'Paris at Night'
-    },
-    {
-        original: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=150&auto=format&fit=crop',
-        description: 'Kyoto Streets'
-    },
-    {
-        original: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2076&auto=format&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=150&auto=format&fit=crop',
-        description: 'Bali Temple'
-    },
-    {
-        original: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop',
-        thumbnail: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=150&auto=format&fit=crop',
-        description: 'Road Trip'
-    }
-];
+
 
 const HomeGallery = () => {
+    const [images, setImages] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchGallery = async () => {
+            try {
+                const res = await axios.get('/api/gallery');
+                const galleryData = res.data.data
+                    .filter(item => item.type === 'image')
+                    .map(item => ({
+                        original: item.url,
+                        thumbnail: item.thumbnail || item.url,
+                        description: item.caption
+                    }));
+                setImages(galleryData);
+            } catch (err) {
+                console.error('Error fetching gallery:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchGallery();
+    }, []);
+
+    if (loading) {
+        return <div className="h-[400px] flex items-center justify-center text-white/50">Loading Gallery...</div>;
+    }
+
+    if (images.length === 0) {
+        return null;
+    }
+
     return (
         <div className="rounded-xl overflow-hidden shadow-2xl border border-white/10">
             <ImageGallery

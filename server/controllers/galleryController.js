@@ -13,11 +13,23 @@ exports.getGallery = async (req, res) => {
 };
 
 // @desc    Add gallery item
-// @route   POST /api/admin/gallery
+// @route   POST /api/gallery
 // @access  Private (Admin)
 exports.createGalleryItem = async (req, res) => {
     try {
-        const item = await Gallery.create(req.body);
+        // Handle aliases from frontend if needed
+        const data = {
+            ...req.body,
+            url: req.body.url || req.body.imageUrl,
+            caption: req.body.caption || req.body.description,
+            type: req.body.type || 'image'
+        };
+
+        if (!data.url) {
+            return res.status(400).json({ success: false, message: 'Please add an image URL' });
+        }
+
+        const item = await Gallery.create(data);
         res.status(201).json({ success: true, data: item });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaGlobeAmericas, FaShieldAlt, FaHeadset, FaPercent } from 'react-icons/fa';
+import axios from 'axios';
 
 const features = [
     {
@@ -30,6 +31,37 @@ const features = [
 ];
 
 const WhyChooseUs = () => {
+    const [stats, setStats] = useState({
+        happyTravelers: '1000+',
+        destinations: '500+',
+        positiveReviews: '100+'
+    });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await axios.get('/api/stats');
+                if (res.data.success) {
+                    const { happyTravelers, destinations, positiveReviews } = res.data.data;
+                    setStats({
+                        happyTravelers: `${happyTravelers}+`,
+                        destinations: `${destinations}+`,
+                        positiveReviews: `${positiveReviews}+`
+                    });
+                }
+            } catch (err) {
+                console.error('Error fetching stats:', err);
+            }
+        };
+        fetchStats();
+    }, []);
+
+    const statItems = [
+        { label: 'Happy Travelers', val: stats.happyTravelers },
+        { label: 'Destinations', val: stats.destinations },
+        { label: 'Positive Reviews', val: stats.positiveReviews }
+    ];
+
     return (
         <section className="py-24 bg-brand-light relative overflow-hidden">
             {/* Background elements */}
@@ -87,15 +119,10 @@ const WhyChooseUs = () => {
                     ))}
                 </div>
 
-                {/* Counter Section Placeholder (Can be enhanced with actual counter logic) */}
-                <div className="mt-24 grid grid-cols-2 lg:grid-cols-4 gap-12 bg-brand-secondary rounded-[3rem] p-12 md:p-16 shadow-2xl relative overflow-hidden">
+                {/* Counter Section with Actual Logic */}
+                <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-12 bg-brand-secondary rounded-[3rem] p-12 md:p-16 shadow-2xl relative overflow-hidden">
                     <div className="absolute inset-0 bg-brand-primary/10 opacity-30"></div>
-                    {[
-                        { label: 'Happy Travelers', val: '50k+' },
-                        { label: 'Destinations', val: '500+' },
-                        { label: 'Local Experts', val: '200+' },
-                        { label: 'Positive Reviews', val: '15k+' }
-                    ].map((stat, idx) => (
+                    {statItems.map((stat, idx) => (
                         <motion.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 20 }}

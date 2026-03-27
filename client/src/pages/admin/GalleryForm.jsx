@@ -45,7 +45,7 @@ const GalleryForm = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            setValue('imageUrl', `${res.data.data}`);
+            setValue('url', `${res.data.data}`);
         } catch (err) {
             console.error(err);
             alert('Upload failed');
@@ -66,17 +66,17 @@ const GalleryForm = () => {
                         </label>
                     </div>
                     <input
-                        {...register("imageUrl", { required: "Image URL is required" })}
+                        {...register("url", { required: "Image URL is required" })}
                         className="w-full bg-gray-700 text-white rounded px-4 py-3 border border-gray-600 focus:border-secondary-cyan focus:outline-none"
                         placeholder="https://..."
                     />
-                    {errors.imageUrl && <span className="text-red-400 text-sm">{errors.imageUrl.message}</span>}
+                    {errors.url && <span className="text-red-400 text-sm">{errors.url.message}</span>}
                 </div>
 
                 <div>
                     <label className="block text-gray-400 mb-2 font-semibold">Caption / Description (Optional)</label>
                     <input
-                        {...register("description")}
+                        {...register("caption")}
                         className="w-full bg-gray-700 text-white rounded px-4 py-3 border border-gray-600 focus:border-secondary-cyan focus:outline-none"
                         placeholder="Beautiful sunrise..."
                     />

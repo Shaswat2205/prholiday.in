@@ -61,6 +61,7 @@ app.use('/api/media', require('./routes/media'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/local-videos', require('./routes/localVideos'));
 app.use('/api/search', require('./routes/search'));
+app.use('/api/stats', require('./routes/stats'));
 
 // Static folders
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
