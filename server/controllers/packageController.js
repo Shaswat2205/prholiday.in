@@ -130,35 +130,23 @@ exports.extractPackageData = async (req, res) => {
         let result;
         let lastError;
 
-        const prompt = `
-You are an expert travel package structured data parser. Below is the raw text extracted from a travel package brochure or itinerary document.
-Extract the details into a strict JSON payload that exactly matches the following schema structure. If any field is totally missing, guess a reasonable default or leave it empty, but DO NOT drop keys.
-Important rules:
-- maxPax: should be an integer (guess 2 or 4 if not specified).
-- duration.days and duration.nights: must be integers.
-- price: must be an integer number (strip currency symbols).
-- category: must be purely one of ['Spiritual', 'Adventure', 'Nature', 'Heritage', 'Beach', 'Solo Trip', 'Family', 'Luxury', 'Honeymoon', 'Wildlife', 'Cultural'].
-- itinerary, inclusions, exclusions: must be arrays of STRINGS. (For itinerary, write \"Day 1: ...\", \"Day 2:...\" directly as strings).
+        for (const modelId of modelsToTry) {
+            try {
+                console.log(`Trying Gemini model: ${modelId}`);
+                const model = genAI.getGenerativeModel({ model: modelId });
+                result = await model.generateContent(prompt);
+                if (result) break;
+            } catch (e) {
+                lastError = e;
+                console.warn(`Model ${modelId} failed: ${e.message}`);
+                continue;
+            }
+        }
 
-JSON Schema:
-{
-    "name": "String",
-    "description": "String",
-    "maxPax": Number,
-    "price": Number,
-    "duration": { "days": Number, "nights": Number },
-    "category": "String",
-    "itinerary": ["String", "String"],
-    "inclusions": ["String", "String"],
-    "exclusions": ["String", "String"]
-}
+        if (!result) {
+            throw new Error('All Gemini models failed. Last error: ' + lastError.message);
+        }
 
-Return ONLY raw generic valid JSON. Do not include markdown \`\`\`json wrappers.
-
-Document Text:
-${extractedText}
-`;
-        const result = await model.generateContent(prompt);
         let rawResponse = result.response.text().trim();
         
         if (rawResponse.startsWith('\`\`\`json')) {
