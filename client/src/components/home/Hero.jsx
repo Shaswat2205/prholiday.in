@@ -1,9 +1,57 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FaSearch } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaSearch, FaCalendarAlt, FaUsers, FaArrowRight } from 'react-icons/fa';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import VerticalSlider from '../common/VerticalSlider';
 
 const Hero = () => {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('tours');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(null);
+    const [travelers, setTravelers] = useState(2);
+    const [showSlider, setShowSlider] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
+    const [requestSent, setRequestSent] = useState(false);
+
+    const onDateChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+    };
+
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        if (!searchQuery.trim()) return;
+
+        setIsSearching(true);
+        try {
+            const res = await axios.get(`/api/search?q=${searchQuery}`);
+            const { packages, destinations } = res.data.data;
+
+            if (packages.length > 0 || destinations.length > 0) {
+                // If results exist, navigate to packages page with search param
+                navigate(`/packages?search=${searchQuery}`);
+            } else {
+                // No results found, send request email
+                await axios.post('/api/search/request', {
+                    query: searchQuery,
+                    dates: `${startDate?.toLocaleDateString()} - ${endDate?.toLocaleDateString() || 'Not selected'}`,
+                    travelers,
+                });
+                setRequestSent(true);
+                setTimeout(() => setRequestSent(false), 5000);
+            }
+        } catch (err) {
+            console.error('Search error:', err);
+        } finally {
+            setIsSearching(false);
+        }
+    };
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -27,8 +75,6 @@ const Hero = () => {
 
     return (
         <div className="relative min-h-[100svh] lg:h-[90vh] lg:min-h-[700px] flex items-center justify-center overflow-hidden bg-transparent py-24 lg:py-0">
-            {/* Background handled by global BackgroundVideo component */}
-
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
@@ -62,9 +108,22 @@ const Hero = () => {
                 {/* Search Widget */}
                 <motion.div
                     variants={itemVariants}
-                    className="max-w-5xl mx-auto"
+                    className="max-w-5xl mx-auto relative"
                 >
-                    <div className="bg-white rounded-2xl shadow-2xl p-2 md:p-4">
+                    <AnimatePresence>
+                        {requestSent && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="absolute -top-16 left-1/2 -translate-x-1/2 bg-green-500 text-white px-6 py-2 rounded-full shadow-lg font-bold z-50 flex items-center gap-2"
+                            >
+                                ✨ Plan Requested! We'll find it for you.
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    <div className="bg-white rounded-2xl shadow-2xl p-2 md:p-4 transition-all hover:shadow-brand-primary/10">
                         {/* Tabs */}
                         <div className="flex space-x-4 mb-4 border-b border-gray-100 pb-2 ml-2">
                             {['tours', 'activities', 'destinations'].map((tab) => (
@@ -85,41 +144,84 @@ const Hero = () => {
                             ))}
                         </div>
 
-                        <form className="flex flex-col lg:flex-row gap-4">
+                        <form onSubmit={handleSearch} className="flex flex-col lg:flex-row gap-4">
                             <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="relative border-r border-gray-100 last:border-0 pl-2">
+                                {/* Destination Search */}
+                                <div className="relative border-r border-gray-100 last:border-0 pl-2 text-left">
                                     <label className="flex items-center text-xs font-bold text-gray-400 uppercase mb-1">
                                         <FaSearch className="mr-2 text-brand-primary" /> Destination
                                     </label>
                                     <input
                                         type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Where do you want to go?"
                                         className="w-full bg-transparent text-brand-secondary font-medium focus:outline-none placeholder-gray-300"
                                     />
                                 </div>
-                                <div className="relative border-r border-gray-100 last:border-0 pl-2">
+
+                                {/* Date Range Picker */}
+                                <div className="relative border-r border-gray-100 last:border-0 pl-2 text-left">
                                     <label className="flex items-center text-xs font-bold text-gray-400 uppercase mb-1">
-                                        <span className="mr-2 text-brand-primary">📅</span> Date
+                                        <FaCalendarAlt className="mr-2 text-brand-primary" /> Travel Dates
                                     </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Select Date"
-                                        className="w-full bg-transparent text-brand-secondary font-medium focus:outline-none placeholder-gray-300"
+                                    <DatePicker
+                                        selected={startDate}
+                                        onChange={onDateChange}
+                                        startDate={startDate}
+                                        endDate={endDate}
+                                        selectsRange
+                                        monthsShown={1}
+                                        placeholderText="Select duration"
+                                        className="w-full bg-transparent text-brand-secondary font-medium focus:outline-none placeholder-gray-300 cursor-pointer"
                                     />
                                 </div>
-                                <div className="relative pl-2">
+
+                                {/* Traveler Slider */}
+                                <div className="relative pl-2 text-left group">
                                     <label className="flex items-center text-xs font-bold text-gray-400 uppercase mb-1">
-                                        <span className="mr-2 text-brand-primary">👥</span> Travelers
+                                        <FaUsers className="mr-2 text-brand-primary" /> Travelers
                                     </label>
-                                    <select className="w-full bg-transparent text-brand-secondary font-medium focus:outline-none appearance-none cursor-pointer">
-                                        <option>2 Adults, 1 Room</option>
-                                        <option>1 Adult</option>
-                                        <option>Family (4+)</option>
-                                    </select>
+                                    <div 
+                                        className="flex items-center justify-between w-full bg-transparent text-brand-secondary font-medium cursor-pointer"
+                                        onClick={() => setShowSlider(!showSlider)}
+                                    >
+                                        <span>{travelers} Travelers</span>
+                                        <motion.span animate={{ rotate: showSlider ? 180 : 0 }} className="text-[10px] text-gray-400 group-hover:text-brand-primary">▼</motion.span>
+                                    </div>
+                                    
+                                    <AnimatePresence>
+                                        {showSlider && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -10 }}
+                                                className="absolute top-12 left-0 z-50"
+                                            >
+                                                <VerticalSlider 
+                                                    value={travelers} 
+                                                    onChange={(val) => {
+                                                        setTravelers(val);
+                                                        // Auto-close after short delay for better UX
+                                                        setTimeout(() => setShowSlider(false), 800);
+                                                    }} 
+                                                />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                             </div>
-                            <button className="btn-primary lg:w-48 py-4 flex items-center justify-center gap-2 text-base shadow-brand-primary/20">
-                                <FaSearch /> Search
+
+                            <button 
+                                type="submit"
+                                disabled={isSearching}
+                                className="btn-primary lg:w-48 py-4 flex items-center justify-center gap-2 text-base shadow-brand-primary/20 disabled:opacity-50"
+                            >
+                                {isSearching ? (
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <><FaSearch /> Search</>
+                                )}
                             </button>
                         </form>
                     </div>

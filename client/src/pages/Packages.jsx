@@ -3,13 +3,17 @@ import PackageCard from '../components/common/PackageCard';
 import axios from 'axios';
 import SEO from '../components/common/SEO';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 const Packages = () => {
+    const location = useLocation();
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [priceRange, setPriceRange] = useState(50000);
+    const [priceRange, setPriceRange] = useState(100000);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [sortBy, setSortBy] = useState('Sort by: Featured');
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get('search') || '';
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -30,7 +34,12 @@ const Packages = () => {
     let filteredPackages = packages.filter(pkg => {
         const matchCategory = selectedCategory === 'All' || pkg.category === selectedCategory;
         const matchPrice = pkg.price <= priceRange;
-        return matchCategory && matchPrice;
+        const matchSearch = !searchQuery || 
+            pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            pkg.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (pkg.destination?.name && pkg.destination.name.toLowerCase().includes(searchQuery.toLowerCase()));
+            
+        return matchCategory && matchPrice && matchSearch;
     });
 
     if (sortBy === 'Price: Low to High') {
@@ -138,7 +147,15 @@ const Packages = () => {
                             </div>
 
                             {/* Reset button */}
-                            <button className="w-full py-4 rounded-2xl border-2 border-brand-primary/10 text-brand-primary font-black text-sm uppercase tracking-widest hover:bg-brand-primary/5 transition-all active:scale-95">
+                            <button 
+                                onClick={() => {
+                                    setSelectedCategory('All');
+                                    setPriceRange(100000);
+                                    setSortBy('Sort by: Featured');
+                                    navigate('/packages'); // Clear search query from URL
+                                }}
+                                className="w-full py-4 rounded-2xl border-2 border-brand-primary/10 text-brand-primary font-black text-sm uppercase tracking-widest hover:bg-brand-primary/5 transition-all active:scale-95"
+                            >
                                 Reset All
                             </button>
                         </motion.div>
