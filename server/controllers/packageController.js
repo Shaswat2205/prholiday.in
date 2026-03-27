@@ -123,9 +123,12 @@ exports.extractPackageData = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Could not extract text from document.' });
         }
 
-        // Send to Gemini
+        // Send to Gemini with fallback to more stable model names
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        
+        const modelsToTry = ['gemini-1.5-flash', 'gemini-pro', 'gemini-1.5-pro', 'gemini-1.0-pro'];
+        let result;
+        let lastError;
 
         const prompt = `
 You are an expert travel package structured data parser. Below is the raw text extracted from a travel package brochure or itinerary document.
